@@ -131,6 +131,11 @@ Agreed with the owner on 2026-10-26 in this repository's window. Built on the gr
     - The reply is a letter built from word tiles in the polite style: crates and loose apples in number words (e.g. はこが みっつと、ななこ です). No numerals. This is also grade 1 letter writing
     - The letter goes once. The merchant comes, opens the crates and counts in front of the player; a miss shows the packed crates and the loose ones, and the next day brings a new heap with a different count (two-digit, under 100) so it cannot be memorized
     - The second tool is found by the player, not taught: after a delivery that used the crates, トウカ writes the page herself in the notebook. Its name is Claude's working pick, とおの まとまり
+  - Step 7 in play:
+    - The town shows what each delivery changed, so every change can be traced to a request: the ferry leaves full, the fisher's net floats evenly and brings fish, the merchant's apples fill the market stall the next morning
+    - On the evening the ship sails, the fisher's child comes by, quiet. トウカ rereads the child's first letter
+    - The player taps words in the letter. Every tap gets トウカ's thought and none is marked wrong; the line that carries the worry (that the father will be hungry and far away) makes トウカ act. Japanese: picking out the important words, imagining a character's actions from the scene
+    - トウカ and the child walk to the pier and see the ship off. As it leaves, the lighthouse is lit for the night. The notebook now holds two pages
 - The hero is a girl, fixed; the player does not choose (owner's pick, 2026-10-26). The owner does not like choosing; Claude agreed because a choice doubles the per-age art and the Atelier series has fixed heroes. Whether kids of this age want to choose was not checked
 - The hero's name is **トウカ** (owner's pick, 2026-10-26). From 灯火 (a lamp's flame); it also holds the "tou" of 灯台 and 東大. Other people in story 1 still go by role
 - The hero's look, in words (Claude's call, delegated, 2026-10-26; the owner decides for real once there is art to see):
