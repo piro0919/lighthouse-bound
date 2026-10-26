@@ -1,0 +1,20 @@
+@import 'tailwindcss';
+
+@theme {
+  --color-ink: #2b1d14;
+  --color-paper: #fbf6e6;
+  --color-paper-line: #c9bfa5;
+  --color-shade: rgb(0 0 0 / 0.55);
+  --text-letter: 1.375rem;
+  --text-letter--line-height: 2;
+  --spacing-letter: 34rem;
+}
+
+html,
+body {
+  height: 100%;
+  margin: 0;
+  background: var(--color-ink);
+  overscroll-behavior: none;
+  touch-action: manipulation;
+}

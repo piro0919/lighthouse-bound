@@ -1,0 +1,256 @@
+import Phaser from 'phaser';
+import { drawBasket, drawCrate } from '../art/containers';
+import { emit } from '../bus';
+import { deliverToFisher, merchantAccepts } from '../state';
+import { getState, setState } from '../store';
+import { lines } from '@/story/story1';
+import { fillTiles, fitZoom, OUTER_MARGIN, tappable, TILE } from '../view';
+
+// 地図の大きさと、道・砂浜・海の始まる行（マスの数）
+const ROWS = { width: 32, height: 24, path: 10, sand: 15, water: 18 };
+const MAP_W = ROWS.width * TILE;
+const MAP_H = ROWS.height * TILE;
+const PATH_Y = ROWS.path * TILE;
+const SAND_Y = ROWS.sand * TILE;
+const WATER_Y = ROWS.water * TILE;
+const WALK_SPEED = 70;
+const STEP_MS = 150;
+const MS_PER_S = 1000;
+const HERO_HALF = 8;
+const DIM_ALPHA = 0.6;
+const CHOICE_GAP = 24;
+const CHOICE_SCALE = 2;
+const CRATE_WIDTH = 52;
+const CRATE_HEIGHT = 22;
+const BASKET_WIDTH = 16;
+const FEET = { x: 0.5, y: 1 };
+const SIGN_ICON = { x: 5, y: 2 };
+
+const BUILDINGS = {
+  workshop: { x: 64, y: 60, texture: 'workshop', door: { x: 92, y: 120 } },
+  fisher: { x: 180, y: 72, texture: 'fisherHouse', door: { x: 202, y: 124 } },
+  merchant: { x: 276, y: 70, texture: 'shop', door: { x: 302, y: 124 } },
+} as const;
+const CHILD_AT = { x: 222, y: 104 };
+const MERCHANT_AT = { x: 326, y: 100 };
+const ORCHARD_SIGN = { x: 6, y: 140 };
+const BEACH_SIGN = { x: 140, y: 248 };
+const LIGHTHOUSE_AT = { x: 440, y: 308 };
+const ENTRANCES = {
+  workshop: BUILDINGS.workshop.door,
+  orchard: { x: 20, y: 164 },
+  beach: { x: 148, y: 260 },
+  merchant: BUILDINGS.merchant.door,
+} as const;
+
+type From = keyof typeof ENTRANCES;
+
+// 港町。触った場所までトウカが歩き、戸口や看板に着いたらそこで用を足す
+export class Town extends Phaser.Scene {
+  private hero!: Phaser.GameObjects.Sprite;
+  private from: From = 'workshop';
+  private busy = false;
+
+  constructor() {
+    super('Town');
+  }
+
+  init(data: { from?: From }): void {
+    this.from = data.from ?? 'workshop';
+    this.busy = false;
+  }
+
+  create(): void {
+    fillTiles(
+      this,
+      'grass',
+      -OUTER_MARGIN,
+      -OUTER_MARGIN,
+      MAP_W + OUTER_MARGIN * 2,
+      MAP_H + OUTER_MARGIN * 2,
+    );
+    fillTiles(this, 'path', -OUTER_MARGIN, PATH_Y, MAP_W + OUTER_MARGIN * 2, TILE * 2);
+    fillTiles(this, 'sand', -OUTER_MARGIN, SAND_Y, MAP_W + OUTER_MARGIN * 2, WATER_Y - SAND_Y);
+    fillTiles(
+      this,
+      'water',
+      -OUTER_MARGIN,
+      WATER_Y,
+      MAP_W + OUTER_MARGIN * 2,
+      MAP_H - WATER_Y + OUTER_MARGIN,
+    );
+    Object.values(BUILDINGS).forEach(({ door }) => {
+      fillTiles(this, 'path', door.x - TILE / 2, door.y, TILE, PATH_Y - door.y);
+    });
+
+    // 地面を触ると、そこまで歩く。海には入らない
+    this.add
+      .zone(-OUTER_MARGIN, -OUTER_MARGIN, MAP_W + OUTER_MARGIN * 2, MAP_H + OUTER_MARGIN * 2)
+      .setOrigin(0)
+      .setInteractive()
+      .on('pointerdown', (pointer: Phaser.Input.Pointer) => {
+        const x = Phaser.Math.Clamp(pointer.worldX, 0, MAP_W);
+        const y = Phaser.Math.Clamp(pointer.worldY, 0, WATER_Y - HERO_HALF);
+        this.walkTo(x, y);
+      });
+
+    this.add.image(LIGHTHOUSE_AT.x, LIGHTHOUSE_AT.y, 'lighthouse').setOrigin(0);
+    tappable(
+      this.add.image(BUILDINGS.workshop.x, BUILDINGS.workshop.y, 'workshop').setOrigin(0),
+      () =>
+        this.walkTo(BUILDINGS.workshop.door.x, BUILDINGS.workshop.door.y, () =>
+          this.scene.start('Workshop'),
+        ),
+    );
+    const visitFisher = () =>
+      this.walkTo(BUILDINGS.fisher.door.x, BUILDINGS.fisher.door.y, () => this.atFisher());
+    const visitMerchant = () =>
+      this.walkTo(BUILDINGS.merchant.door.x, BUILDINGS.merchant.door.y, () => this.atMerchant());
+    tappable(
+      this.add.image(BUILDINGS.fisher.x, BUILDINGS.fisher.y, 'fisherHouse').setOrigin(0),
+      visitFisher,
+    );
+    tappable(
+      this.add.image(BUILDINGS.merchant.x, BUILDINGS.merchant.y, 'shop').setOrigin(0),
+      visitMerchant,
+    );
+    tappable(this.add.image(CHILD_AT.x, CHILD_AT.y, 'child').setOrigin(0), visitFisher);
+    tappable(this.add.image(MERCHANT_AT.x, MERCHANT_AT.y, 'merchant').setOrigin(0), visitMerchant);
+
+    this.sign(ORCHARD_SIGN, 'apple', () =>
+      this.walkTo(ENTRANCES.orchard.x, ENTRANCES.orchard.y, () => this.scene.start('Orchard')),
+    );
+    this.sign(BEACH_SIGN, 'shell', () =>
+      this.walkTo(ENTRANCES.beach.x, ENTRANCES.beach.y, () => this.scene.start('Beach')),
+    );
+
+    const start = ENTRANCES[this.from];
+    this.hero = this.add.sprite(start.x, start.y, 'hero').setOrigin(FEET.x, FEET.y);
+
+    const camera = this.cameras.main;
+    camera.setBounds(
+      -OUTER_MARGIN,
+      -OUTER_MARGIN,
+      MAP_W + OUTER_MARGIN * 2,
+      MAP_H + OUTER_MARGIN * 2,
+    );
+    camera.startFollow(this.hero, true);
+    const fit = () => camera.setZoom(fitZoom(this.scale.width, this.scale.height));
+    fit();
+    this.scale.on('resize', fit);
+    this.events.once('shutdown', () => this.scale.off('resize', fit));
+  }
+
+  // 看板には、行き先で採れるものの絵を描いておく
+  private sign(at: { x: number; y: number }, item: string, onTap: () => void): void {
+    tappable(this.add.image(at.x, at.y, 'sign').setOrigin(0), onTap);
+    this.add.image(at.x + SIGN_ICON.x, at.y + SIGN_ICON.y, item).setOrigin(0);
+  }
+
+  private walkTo(x: number, y: number, onArrive?: () => void): void {
+    if (this.busy) return;
+    this.tweens.killTweensOf(this.hero);
+    const distance = Phaser.Math.Distance.Between(this.hero.x, this.hero.y, x, y);
+    let step = 0;
+    const timer = this.time.addEvent({
+      delay: STEP_MS,
+      loop: true,
+      callback: () => {
+        step += 1;
+        this.hero.setTexture(step % 2 === 0 ? 'hero' : 'hero2');
+      },
+    });
+    this.tweens.add({
+      targets: this.hero,
+      x,
+      y,
+      duration: (distance / WALK_SPEED) * MS_PER_S,
+      onComplete: () => {
+        timer.remove();
+        this.hero.setTexture('hero');
+        onArrive?.();
+      },
+      onStop: () => timer.remove(),
+    });
+  }
+
+  private atFisher(): void {
+    if (getState().delivered.fisher) {
+      emit('say', { text: lines.fisherThanks });
+      return;
+    }
+    this.choose((target) => {
+      if (target === 'basket') {
+        emit('say', { text: lines.fisherWrong });
+        return;
+      }
+      const { state, result } = deliverToFisher(getState());
+      setState(state);
+      const text = {
+        wrong: lines.fisherWrong,
+        notFull: lines.fisherNotFull,
+        thanks: lines.fisherThanks,
+      }[result];
+      emit('say', { text });
+    });
+  }
+
+  private atMerchant(): void {
+    if (getState().delivered.merchant) {
+      emit('say', { text: lines.merchantThanks });
+      return;
+    }
+    this.choose((target) => {
+      if (target === 'crate' || !merchantAccepts(getState().basket)) {
+        emit('say', { text: lines.merchantWrong });
+        return;
+      }
+      emit('say', { text: lines.merchantPlates, onClose: () => this.scene.start('Plates') });
+    });
+  }
+
+  // 戸口で、箱とかごのどちらを渡すかを選ぶ。外を触るとやめる
+  private choose(onChoose: (target: 'crate' | 'basket') => void): void {
+    this.busy = true;
+    const camera = this.cameras.main;
+    const { x: cx, y: cy } = camera.midPoint;
+    const span = MAP_W + OUTER_MARGIN * 2;
+    const layer = this.add.container(0, 0);
+    const finish = () => {
+      layer.destroy();
+      this.busy = false;
+    };
+    const dim = this.add
+      .rectangle(cx - span, cy - span, span * 2, span * 2, 0x000000, DIM_ALPHA)
+      .setOrigin(0)
+      .setInteractive()
+      .on('pointerdown', finish);
+    const { crate, basket } = getState();
+    const crateView = drawCrate(this, 0, 0, crate).setScale(CHOICE_SCALE);
+    const basketView = drawBasket(this, 0, 0, basket).setScale(CHOICE_SCALE);
+    // 縦長の画面にも収まるよう、箱を上、かごを下に並べる
+    crateView.setPosition(
+      cx - (CRATE_WIDTH * CHOICE_SCALE) / 2,
+      cy - CRATE_HEIGHT * CHOICE_SCALE - CHOICE_GAP / 2,
+    );
+    basketView.setPosition(cx - (BASKET_WIDTH * CHOICE_SCALE) / 2, cy + CHOICE_GAP);
+    layer.add([dim, crateView, basketView]);
+    (
+      [
+        ['crate', crateView],
+        ['basket', basketView],
+      ] as const
+    ).forEach(([target, view]) => {
+      const bounds = view.getBounds();
+      const zone = this.add
+        .zone(bounds.x, bounds.y, bounds.width, bounds.height)
+        .setOrigin(0)
+        .setInteractive({ useHandCursor: true })
+        .on('pointerdown', () => {
+          finish();
+          onChoose(target);
+        });
+      layer.add(zone);
+    });
+  }
+}

@@ -1,0 +1,124 @@
+import Phaser from 'phaser';
+import { BAG_LIMIT, pick, type Item } from '../state';
+import { getState, setState } from '../store';
+import { fillTiles, fitCamera, OUTER_MARGIN, STAGE, tappable } from '../view';
+
+type Spot = { item: Item; x: number; y: number };
+
+const TREE_SCALE = 2;
+const EXIT_AT = { x: 8, y: 166 };
+// 帰り道の看板には工房の戸の絵を小さく描く
+const EXIT_ICON = { x: 5, y: 1, scale: 0.5 };
+
+// 実のなる位置。木（sprites.ts の tree）を2倍にした絵の葉の上に置く
+function treeFruits(item: Item, left: number, top: number): Spot[] {
+  const offsets = [
+    { x: 14, y: 8 },
+    { x: 30, y: 6 },
+    { x: 44, y: 12 },
+    { x: 10, y: 22 },
+    { x: 24, y: 18 },
+    { x: 38, y: 22 },
+    { x: 50, y: 26 },
+    { x: 16, y: 34 },
+    { x: 30, y: 32 },
+    { x: 44, y: 36 },
+    { x: 22, y: 44 },
+    { x: 36, y: 46 },
+  ];
+  return offsets.map(({ x, y }) => ({ item, x: left + x, y: top + y }));
+}
+
+const ORCHARD_TREES = [
+  { x: 12, y: 40, item: 'apple' as const },
+  { x: 108, y: 48, item: 'mandarin' as const },
+];
+
+const BEACH_SPOTS: Spot[] = [
+  { item: 'shell', x: 30, y: 60 },
+  { item: 'shell', x: 76, y: 44 },
+  { item: 'shell', x: 120, y: 70 },
+  { item: 'shell', x: 150, y: 40 },
+  { item: 'shell', x: 56, y: 96 },
+  { item: 'shell', x: 140, y: 104 },
+  { item: 'seaweed', x: 20, y: 120 },
+  { item: 'seaweed', x: 64, y: 130 },
+  { item: 'seaweed', x: 100, y: 112 },
+  { item: 'seaweed', x: 160, y: 132 },
+  { item: 'seaweed', x: 110, y: 150 },
+  { item: 'seaweed', x: 40, y: 150 },
+];
+
+// 採る場所に共通の形。触ったものが持ち物（Hud）に入る。場面に入り直すと、また実っている
+abstract class Gathering extends Phaser.Scene {
+  protected abstract ground: string;
+  protected abstract exitTo: 'orchard' | 'beach';
+  protected abstract decorate(): void;
+  protected abstract spots(): Spot[];
+
+  create(): void {
+    const span = STAGE + OUTER_MARGIN * 2;
+    fillTiles(this, this.ground, -OUTER_MARGIN, -OUTER_MARGIN, span, span);
+    this.decorate();
+    this.spots().forEach(({ item, x, y }) => {
+      const image = this.add.image(x, y, item).setOrigin(0);
+      tappable(image, () => {
+        if (!image.visible || getState().bag.length >= BAG_LIMIT) return;
+        image.setVisible(false);
+        image.disableInteractive();
+        setState(pick(getState(), item));
+      });
+    });
+    tappable(this.add.image(EXIT_AT.x, EXIT_AT.y, 'sign').setOrigin(0), () =>
+      this.scene.start('Town', { from: this.exitTo }),
+    );
+    this.add
+      .image(EXIT_AT.x + EXIT_ICON.x, EXIT_AT.y + EXIT_ICON.y, 'door')
+      .setOrigin(0)
+      .setScale(EXIT_ICON.scale);
+    fitCamera(this);
+  }
+}
+
+export class Orchard extends Gathering {
+  protected ground = 'grass';
+  protected exitTo = 'orchard' as const;
+
+  constructor() {
+    super('Orchard');
+  }
+
+  protected decorate(): void {
+    ORCHARD_TREES.forEach(({ x, y }) =>
+      this.add.image(x, y, 'tree').setOrigin(0).setScale(TREE_SCALE),
+    );
+  }
+
+  protected spots(): Spot[] {
+    return ORCHARD_TREES.flatMap(({ x, y, item }) => treeFruits(item, x, y));
+  }
+}
+
+export class Beach extends Gathering {
+  protected ground = 'sand';
+  protected exitTo = 'beach' as const;
+
+  constructor() {
+    super('Beach');
+  }
+
+  protected decorate(): void {
+    fillTiles(
+      this,
+      'water',
+      -OUTER_MARGIN,
+      -OUTER_MARGIN,
+      STAGE + OUTER_MARGIN * 2,
+      OUTER_MARGIN + 24,
+    );
+  }
+
+  protected spots(): Spot[] {
+    return BEACH_SPOTS;
+  }
+}

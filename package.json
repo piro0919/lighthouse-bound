@@ -1,0 +1,41 @@
+{
+  "name": "lighthouse-bound",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "eslint",
+    "lint:fix": "eslint --fix",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
+    "typecheck": "next typegen && tsc --noEmit",
+    "test": "vitest run",
+    "lefthook:install": "lefthook install"
+  },
+  "dependencies": {
+    "next": "^16.4.2",
+    "phaser": "^4.2.1",
+    "react": "^19.3.1",
+    "react-dom": "^19.3.1"
+  },
+  "devDependencies": {
+    "@commitlint/cli": "^21.2.4",
+    "@commitlint/config-conventional": "^21.2.4",
+    "@piro0919/eslint-config": "github:piro0919/eslint-config#v1.1.0",
+    "@tailwindcss/postcss": "^4.3.3",
+    "@types/node": "^26.6.5",
+    "@types/react": "^19.3.0",
+    "@types/react-dom": "^19.3.0",
+    "eslint": "^10.13.0",
+    "eslint-config-next": "^16.4.2",
+    "eslint-config-prettier": "^10.1.8",
+    "eslint-plugin-hollow-tests": "^0.3.0",
+    "lefthook": "^2.2.2",
+    "prettier": "^3.9.10",
+    "tailwindcss": "^4.3.3",
+    "typescript": "^5.9.3",
+    "vitest": "^5.0.5"
+  }
+}
