@@ -73,6 +73,26 @@ function PairsPage() {
   );
 }
 
+// とおの まとまり のページ。10ずつ詰めた箱と、ばらのりんご。6の場面の返事の手紙と同じ形
+const TENS_EXAMPLE = { crates: 3, loose: 7 };
+
+function TensPage() {
+  return (
+    <div className="flex flex-wrap items-end gap-3">
+      {Array.from({ length: TENS_EXAMPLE.crates }, (_, n) => (
+        <Crate key={`crate-${String(n)}`} filled={filledUpTo(CRATE_SLOTS)} small />
+      ))}
+      <span className="flex flex-wrap gap-1">
+        {Array.from({ length: TENS_EXAMPLE.loose }, (_, n) => (
+          <Sprite key={`loose-${String(n)}`} name="apple" className="size-slot-small" />
+        ))}
+      </span>
+    </div>
+  );
+}
+
+const PAGE_BODIES: Record<Page, () => React.JSX.Element> = { pairs: PairsPage, tens: TensPage };
+
 // 道具の手帳。ページができたら画面の端にずっと下がっていて、光ったり促したりはしない。外を触ると閉じる
 export function Notebook() {
   const pages = useSyncExternalStore(subscribePages, readPages, noPages);
@@ -121,21 +141,24 @@ export function Notebook() {
           onClick={close}
         >
           <div
-            className="w-full max-w-letter rounded-sm border-4 border-ink bg-paper p-6 text-ink"
+            className="max-h-full w-full max-w-letter overflow-y-auto rounded-sm border-4 border-ink bg-paper p-6 text-ink"
             onClick={(event) => event.stopPropagation()}
           >
-            {pages.map((page) => (
-              <section key={page}>
-                <button
-                  type="button"
-                  className="mb-3 block text-left text-letter"
-                  onClick={() => speak(pageTitles[page])}
-                >
-                  {pageTitles[page]}
-                </button>
-                <PairsPage />
-              </section>
-            ))}
+            {pages.map((page) => {
+              const Body = PAGE_BODIES[page];
+              return (
+                <section key={page} className="mb-6 last:mb-0">
+                  <button
+                    type="button"
+                    className="mb-3 block text-left text-letter"
+                    onClick={() => speak(pageTitles[page])}
+                  >
+                    {pageTitles[page]}
+                  </button>
+                  <Body />
+                </section>
+              );
+            })}
           </div>
         </div>
       )}

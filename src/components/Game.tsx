@@ -3,6 +3,7 @@
 import { useEffect, useRef } from 'react';
 import { getState, setState } from '@/game/store';
 import { Notebook } from './Notebook';
+import { Reply } from './Reply';
 import { TextLayer } from './TextLayer';
 
 // Phaser はブラウザでしか動かないので、画面に出てから読み込む
@@ -31,6 +32,7 @@ export function Game() {
     <>
       <div ref={parent} className="fixed inset-0" />
       <Notebook />
+      <Reply />
       <TextLayer />
     </>
   );

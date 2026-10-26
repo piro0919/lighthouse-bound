@@ -1,7 +1,7 @@
 import Phaser from 'phaser';
 import { drawBasket, drawCrate } from '../art/containers';
 import { emit } from '../bus';
-import { BAG_LIMIT, lessonDue, pick, stepFiveOpen } from '../state';
+import { BAG_LIMIT, lessonDue, pick, stepFiveOpen, stepSixOpen } from '../state';
 import { getState, setState, subscribe } from '../store';
 import { fillTiles, fitCamera, onLeave, OUTER_MARGIN, STAGE, tappable, TILE } from '../view';
 
@@ -16,6 +16,9 @@ const STEP_FIVE_LETTERS = [
   { id: 'crossing', x: 30, y: 86 },
   { id: 'net', x: 60, y: 86 },
 ] as const;
+const TALLY_LETTER = { id: 'tally', x: 45, y: 82 } as const;
+// 6の場面の蔵へ行く戸。左の壁に置く
+const STOREROOM_DOOR = { x: 8, y: 28 };
 // 小屋の棚の浮き。入り直すと、また並んでいる
 const SHELF_AT = { x: 4, y: 100 };
 const FLOAT_ROWS = 2;
@@ -44,10 +47,20 @@ export class Workshop extends Phaser.Scene {
 
     this.add.image(DESK.x, DESK.y, 'desk').setOrigin(0);
     const stepFive = stepFiveOpen(getState());
-    [...LETTERS, ...(stepFive ? STEP_FIVE_LETTERS : [])].forEach(({ id, x, y }) => {
+    const stepSix = stepSixOpen(getState());
+    [
+      ...LETTERS,
+      ...(stepFive ? STEP_FIVE_LETTERS : []),
+      ...(stepSix ? [TALLY_LETTER] : []),
+    ].forEach(({ id, x, y }) => {
       tappable(this.add.image(x, y, 'letter').setOrigin(0), () => emit('letter', id));
     });
     if (stepFive) this.shelf();
+    if (stepSix && !getState().delivered.tally) {
+      tappable(this.add.image(STOREROOM_DOOR.x, STOREROOM_DOOR.y, 'door').setOrigin(0), () =>
+        this.scene.start('Storeroom'),
+      );
+    }
 
     tappable(this.add.image(DOOR_AT.x, DOOR_AT.y, 'door').setOrigin(0), () =>
       this.scene.start('Town', { from: 'workshop' }),

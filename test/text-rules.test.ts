@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { letters, lines, pageTitles } from '@/story/story1';
+import { letters, lines, pageTitles, reply } from '@/story/story1';
 
 // 物語1はひらがなで始める。1年生のカタカナ（トウカ）は使ってよい。
 // 数字・数式の記号は、どの学年でも画面に出さない（CLAUDE.md の Rules for content）
@@ -10,6 +10,7 @@ const allText = [
   ...Object.values(letters).flat(),
   ...Object.values(lines),
   ...Object.values(pageTitles),
+  ...Object.values(reply).flat(),
 ];
 
 describe('story 1 text', () => {

@@ -1,5 +1,5 @@
 import type { LetterId } from '@/story/story1';
-import type { Item } from './state';
+import type { Item, Tally } from './state';
 
 // 台詞に添える絵。数は言葉で言い、同じ数のものを絵で並べる（数字は出さない）
 export type Picture = { item: Item; count: number };
@@ -10,6 +10,7 @@ type Events = {
   letter: LetterId;
   say: Say;
   notebook: { onClose?: () => void };
+  reply: { onSend: (tally: Tally) => void };
 };
 
 type Listener<K extends keyof Events> = (payload: Events[K]) => void;

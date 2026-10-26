@@ -101,8 +101,8 @@ Claude's calls, delegated by the owner on 2026-10-26 ("no preference").
 ## Code
 
 - `pnpm dev`, `pnpm lint`, `pnpm typecheck`, `pnpm test`, `pnpm build`. lefthook runs eslint, prettier and the typecheck on commit and the tests on push
-- `src/game/` is the Phaser side: `main.ts` (config), `scenes/` (Boot, Workshop, Town, Orchard and Beach in `Gathering.ts`, Gate, Packing, Plates, Fill, Lesson, Hud), `state.ts` (pure rules for bag, crate, basket, deliveries, the ferry and notebook pages), `store.ts` (the one shared state), `bus.ts` (Phaser asks React to show a letter, a line or the notebook)
-- `src/components/` is the React side: `Game.tsx` loads Phaser in the browser, `TextLayer.tsx` shows letters and lines in a normal font, read aloud on tap (`src/lib/speak.ts`, the browser's speech for now), `Notebook.tsx` is the tools' notebook. React draws the same pixel art through `src/game/art/images.ts` (Boot turns the textures into image URLs) and `Sprite.tsx`
+- `src/game/` is the Phaser side: `main.ts` (config), `scenes/` (Boot, Workshop, Town, Orchard and Beach in `Gathering.ts`, Gate, Packing, Plates, Fill, Lesson, Storeroom, Hud), `state.ts` (pure rules for bag, crate, basket, deliveries, the ferry and notebook pages), `store.ts` (the one shared state), `bus.ts` (Phaser asks React to show a letter, a line or the notebook)
+- `src/components/` is the React side: `Game.tsx` loads Phaser in the browser, `TextLayer.tsx` shows letters and lines in a normal font, read aloud on tap (`src/lib/speak.ts`, the browser's speech for now), `Notebook.tsx` is the tools' notebook, `Reply.tsx` the word-tile letter of step 6. React draws the same pixel art through `src/game/art/images.ts` (Boot turns the textures into image URLs) and `Sprite.tsx`
 - In development, `window.__game` and `window.__store` let check scripts read the scenes and the state
 - `src/story/story1.ts` holds all story 1 text
 - Art is placeholder pixel art drawn in code (`src/game/art/sprites.ts`) until real art is made; real art needs the owner's sign-off on two or three samples first
@@ -168,6 +168,13 @@ Agreed with the owner on 2026-10-26 in this repository's window. Built on the gr
     - The gate is a sign by the pier. Nine townspeople wait; tapping one hands a tag, tapping again takes it back. Ringing the bell brings the ferry, which is the one try
     - The floats sit on a shelf in the workshop (the "shed" of the spec) and are carried in the basket, like the apples
     - All three one-try deliveries share one scene (`Fill.ts`): the crate, the ferry seats and the net are drawn as the same two rows of five, and a miss returns everything and ends the day
+  - Step 6 as built (Claude's calls, 2026-10-26):
+    - It opens after both step 5 deliveries. The merchant's second letter joins the desk and a door on the workshop's left wall leads to the storeroom
+    - The heap holds 21 to 59 apples, never a multiple of ten, so loose apples always remain; it stays the same until a letter is sent. Six empty crates stand in two columns
+    - Tapping a crate picks it (it lifts a little); while one is picked, tapping a heap apple moves it into that crate. A full crate drops the pick. Apples cannot be taken back out
+    - The reply frame is fixed in the polite style (しょうにんさまへ … りんごは、はこが ＿と、＿ です。 トウカより); the player fills the two blanks from crate words (ひとつ to むっつ) and loose words (いっこ to きゅうこ). Closing the reply before sending does not use the try
+    - The merchant clears the room and shows the true count as full crates and loose apples, one by one. A wrong letter brings a new heap the next day
+    - The page とおの まとまり is written only when the letter was right and crates were used, because トウカ's line says counting by tens made it quick. A right letter without crates finishes the step with no page
   - Step 5 in play:
     - Same wall as step 3 in a different look: one try, and what is already there cannot be seen
     - The ferry: a letter from the ferryman says four are already aboard and ten fit in all. The ferry has not arrived yet; the player hands boarding tags to people waiting at the gate

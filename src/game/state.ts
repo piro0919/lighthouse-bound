@@ -14,8 +14,16 @@ export const LESSON_FILLS = [{ filled: SAILOR_HAS }, { filled: 4 }, { filled: 8 
 export const CROSSING_ABOARD = 4;
 export const NET_FLOATS = 6;
 
-// 道具の手帳のページ。とおの あいかた が最初の1枚
-export type Page = 'pairs';
+// 6の場面。蔵の空き箱の数と、山のりんごの数の幅。数は2けたで、10の倍数にはしない（ばらが必ず残る）
+export const STOREROOM_CRATES = 6;
+export const HEAP_MIN = 21;
+export const HEAP_MAX = 59;
+
+// 蔵のりんご。山に残っている数と、箱ごとの数
+export type Storeroom = { loose: number; crates: number[] };
+
+// 道具の手帳のページ。とおの あいかた が最初の1枚。とおの まとまり が2枚目
+export type Page = 'pairs' | 'tens';
 
 export type State = {
   bag: Item[];
@@ -27,10 +35,12 @@ export type State = {
     sailor: boolean;
     crossing: boolean;
     net: boolean;
+    tally: boolean;
   };
   // こぶねを出した回数。1回目のあとに、おばあちゃんが とおの あいかた を見せる
   ferryTrips: number;
   pages: Page[];
+  storeroom: Storeroom | null;
 };
 
 export function initialState(): State {
@@ -38,9 +48,17 @@ export function initialState(): State {
     bag: [],
     crate: Array<Item | null>(CRATE_SLOTS).fill(null),
     basket: [],
-    delivered: { fisher: false, merchant: false, sailor: false, crossing: false, net: false },
+    delivered: {
+      fisher: false,
+      merchant: false,
+      sailor: false,
+      crossing: false,
+      net: false,
+      tally: false,
+    },
     ferryTrips: 0,
     pages: [],
+    storeroom: null,
   };
 }
 
@@ -202,5 +220,64 @@ export function deliverFloats(state: State): { state: State; result: FillResult 
   return {
     state: { ...state, basket: [], delivered: { ...state.delivered, net: true } },
     result,
+  };
+}
+
+// 6の場面は、5の場面の2つを届け終えてから始まる
+export function stepSixOpen(state: State): boolean {
+  return state.delivered.crossing && state.delivered.net;
+}
+
+// 新しい山。rand は 0 以上 1 未満を返す
+export function newHeap(rand: () => number): Storeroom {
+  const span = HEAP_MAX - HEAP_MIN + 1;
+  let loose = HEAP_MIN + Math.floor(rand() * span);
+  if (loose % CRATE_SLOTS === 0) loose += 1;
+  return { loose, crates: Array<number>(STOREROOM_CRATES).fill(0) };
+}
+
+export function heapTotal(storeroom: Storeroom): number {
+  return storeroom.crates.reduce((sum, count) => sum + count, storeroom.loose);
+}
+
+// 山から1つ取って箱に入れる。箱が埋まっていれば入らない
+export function packApple(storeroom: Storeroom, crate: number): Storeroom {
+  const inCrate = storeroom.crates[crate];
+  if (storeroom.loose === 0 || inCrate === undefined || inCrate >= CRATE_SLOTS) return storeroom;
+  return {
+    loose: storeroom.loose - 1,
+    crates: storeroom.crates.map((count, n) => (n === crate ? count + 1 : count)),
+  };
+}
+
+// 返事の手紙に書いた数。はこが いくつ と、ばらが いくつ
+export type Tally = { crates: number; loose: number };
+
+export type TallyResult = 'thanks' | 'miss';
+
+// 手紙を出せるのは1回。商人は全部を10ずつ数え直し、合っていれば全部買う。違えばその日はおしまいで、次の日は別の山になる。
+// 箱を使って数えて合っていたら、トウカが自分で とおの まとまり を手帳に書く（教わらずに見つけた道具）
+export function settleTally(
+  state: State,
+  said: Tally,
+  rand: () => number,
+): { state: State; result: TallyResult; truth: Tally } {
+  const storeroom = state.storeroom ?? newHeap(rand);
+  const total = heapTotal(storeroom);
+  const truth = { crates: Math.floor(total / CRATE_SLOTS), loose: total % CRATE_SLOTS };
+  const usedCrates = storeroom.crates.some((count) => count > 0);
+  const right = said.crates * CRATE_SLOTS + said.loose === total;
+  if (!right) {
+    return { state: { ...state, storeroom: newHeap(rand) }, result: 'miss', truth };
+  }
+  const withPage = usedCrates ? writePage(state, 'tens') : state;
+  return {
+    state: {
+      ...withPage,
+      storeroom: null,
+      delivered: { ...withPage.delivered, tally: true },
+    },
+    result: 'thanks',
+    truth,
   };
 }

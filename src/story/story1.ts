@@ -1,6 +1,6 @@
 // 物語1「とおの はこ」の文章。1年生の始めはひらがなを習っている途中なので、漢字は使わない（test/text-rules.test.ts）
 
-export type LetterId = 'fisher' | 'merchant' | 'crossing' | 'net';
+export type LetterId = 'fisher' | 'merchant' | 'crossing' | 'net' | 'tally';
 
 export const letters: Record<LetterId, readonly string[]> = {
   fisher: [
@@ -30,6 +30,15 @@ export const letters: Record<LetterId, readonly string[]> = {
     'うきを とおに したい。こうぼうの うきを かごで もって きて おくれ。',
     'あみの ところへ いけるのは いちど だけ。はまべで まって いるよ。',
     'あみの りょうしより',
+  ],
+  // 6の場面。1の場面の商人から2通目
+  tally: [
+    'こうぼうの みなさまへ',
+    'このまえは、みかんを ありがとうございました。',
+    'こんどは、くらの りんごを ぜんぶ かいたいと おもいます。',
+    'りんごが いくつ あるか、てがみで おしえて ください。',
+    'どうぞ よろしく おねがいします。',
+    'みなとの しょうにんより',
   ],
 };
 
@@ -80,9 +89,31 @@ export const lines = {
   netOver: 'おっと、うきが あまって しまったね。',
   netShort: 'おや、まだ うきが たりないなあ。',
   netReturn: 'ちょうど とおに なる ぶんを、また あした たのむよ。',
+  // 6の場面
+  tallyCome: 'おてがみ、ありがとうございます。では、かぞえますね。',
+  tallyThanks: 'てがみの とおり です。ぜんぶ かいましょう。ありがとうございました。',
+  tallyMiss: 'おや、てがみの かずと ちがう ようですね。',
+  tallyTomorrow: 'では、また あした おねがいします。',
+  tokaThink: 'とおずつ はこに つめたら、かずが すぐに わかったな。',
+  tokaWrite: 'てちょうに かいて おこう。',
 } as const;
 
 // 道具の手帳のページの名前
 export const pageTitles = {
   pairs: 'とおの あいかた',
+  tens: 'とおの まとまり',
+} as const;
+
+// 6の場面の返事の手紙。数の言葉の札を選んで、あいたところに入れる（数字は使わない）
+export const reply = {
+  to: 'しょうにんさまへ',
+  before: 'りんごは、はこが',
+  middle: 'と、',
+  after: 'です。',
+  from: 'トウカより',
+  send: 'てがみを だす',
+  // はこの数。ひとつ から
+  crates: ['ひとつ', 'ふたつ', 'みっつ', 'よっつ', 'いつつ', 'むっつ'],
+  // ばらの数。いっこ から
+  loose: ['いっこ', 'にこ', 'さんこ', 'よんこ', 'ごこ', 'ろっこ', 'ななこ', 'はっこ', 'きゅうこ'],
 } as const;

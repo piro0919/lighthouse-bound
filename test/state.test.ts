@@ -16,6 +16,13 @@ import {
   lessonDue,
   merchantAccepts,
   NET_FLOATS,
+  newHeap,
+  packApple,
+  heapTotal,
+  settleTally,
+  stepSixOpen,
+  HEAP_MAX,
+  HEAP_MIN,
   netAccepts,
   netWaiting,
   pick,
@@ -154,7 +161,14 @@ describe('sailor', () => {
 describe('step 5', () => {
   const afterSailor = (): State => ({
     ...writePage(initialState(), 'pairs'),
-    delivered: { fisher: true, merchant: true, sailor: true, crossing: false, net: false },
+    delivered: {
+      fisher: true,
+      merchant: true,
+      sailor: true,
+      crossing: false,
+      net: false,
+      tally: false,
+    },
   });
 
   it('opens once the sailor has his apples and the page is written', () => {
@@ -187,5 +201,58 @@ describe('step 5', () => {
     expect(done.result).toBe('thanks');
     expect(done.state.basket).toHaveLength(0);
     expect(netWaiting(done.state)).toBe(false);
+  });
+});
+
+describe('step 6', () => {
+  const fixed = (value: number) => () => value;
+
+  it('opens once both step 5 deliveries are done', () => {
+    const state = initialState();
+    expect(stepSixOpen(state)).toBe(false);
+    expect(
+      stepSixOpen({ ...state, delivered: { ...state.delivered, crossing: true, net: true } }),
+    ).toBe(true);
+  });
+
+  it('makes a two-digit heap that always leaves loose apples', () => {
+    for (let n = 0; n < 50; n += 1) {
+      const { loose } = newHeap(fixed(n / 50));
+      expect(loose).toBeGreaterThanOrEqual(HEAP_MIN);
+      expect(loose).toBeLessThanOrEqual(HEAP_MAX + 1);
+      expect(loose % CRATE_SLOTS).not.toBe(0);
+    }
+  });
+
+  it('moves apples from the heap into a crate until it is full', () => {
+    let storeroom = { loose: 12, crates: [0, 0] };
+    for (let n = 0; n < 11; n += 1) storeroom = packApple(storeroom, 0);
+    expect(storeroom).toEqual({ loose: 2, crates: [10, 0] });
+    expect(heapTotal(storeroom)).toBe(12);
+  });
+
+  it('buys everything when the letter is right, and writes the page when crates were used', () => {
+    const state: State = { ...initialState(), storeroom: { loose: 7, crates: [10, 10, 10, 0] } };
+    const { state: next, result, truth } = settleTally(state, { crates: 3, loose: 7 }, fixed(0));
+    expect(result).toBe('thanks');
+    expect(truth).toEqual({ crates: 3, loose: 7 });
+    expect(next.delivered.tally).toBe(true);
+    expect(next.pages).toContain('tens');
+  });
+
+  it('writes no page when the right count was found without crates', () => {
+    const state: State = { ...initialState(), storeroom: { loose: 23, crates: [0] } };
+    const { state: next, result } = settleTally(state, { crates: 2, loose: 3 }, fixed(0));
+    expect(result).toBe('thanks');
+    expect(next.pages).not.toContain('tens');
+  });
+
+  it('brings a new heap after a wrong letter, and writes no page then', () => {
+    const state: State = { ...initialState(), storeroom: { loose: 17, crates: [10, 10] } };
+    const { state: next, result } = settleTally(state, { crates: 3, loose: 6 }, fixed(0.5));
+    expect(result).toBe('miss');
+    expect(next.delivered.tally).toBe(false);
+    expect(next.pages).not.toContain('tens');
+    expect(next.storeroom?.crates.every((count) => count === 0)).toBe(true);
   });
 });
