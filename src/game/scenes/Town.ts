@@ -52,6 +52,13 @@ const SAILOR_AT = { x: 378, y: 262 };
 // 5の場面。渡し舟の のりばの看板と、浜で待つ網の漁師
 const GATE_SIGN = { x: 326, y: 244 };
 const NET_FISHER_AT = { x: 232, y: 256 };
+// 7の場面。満員で出ていく渡し舟、浮きのそろった網と魚、店先に並んだりんごの箱、灯台の灯
+const CHANGE_SCALE = 0.5;
+const CROSSING_AT = { x: 300, y: 330 };
+const NET_AT = { x: 180, y: 300 };
+const FISH_AT = { x: 250, y: 266 };
+const STALL = { x: 318, y: 124, pitch: 12, crates: 3 };
+const LAMP = { x: 12, y: 6, radius: 10, color: 0xf2c14e, alpha: 0.85 };
 const ENTRANCES = {
   workshop: BUILDINGS.workshop.door,
   orchard: { x: 20, y: 164 },
@@ -117,7 +124,7 @@ export class Town extends Phaser.Scene {
 
     this.add.image(LIGHTHOUSE_AT.x, LIGHTHOUSE_AT.y, 'lighthouse').setOrigin(0);
     fillTiles(this, 'pier', PIER.x, SAND_Y, PIER.width, PIER.length);
-    this.add.image(SHIP_AT.x, SHIP_AT.y, 'ship').setOrigin(0);
+    if (!getState().delivered.farewell) this.add.image(SHIP_AT.x, SHIP_AT.y, 'ship').setOrigin(0);
     const visitPier = () => this.walkTo(ENTRANCES.pier.x, ENTRANCES.pier.y, () => this.atPier());
     tappable(this.add.image(FERRY_AT.x, FERRY_AT.y, 'ferry').setOrigin(0), visitPier);
     if (sailorWaiting(getState())) {
@@ -133,6 +140,7 @@ export class Town extends Phaser.Scene {
         this.walkTo(ENTRANCES.net.x, ENTRANCES.net.y, () => this.atNet()),
       );
     }
+    this.changes();
     tappable(
       this.add.image(BUILDINGS.workshop.x, BUILDINGS.workshop.y, 'workshop').setOrigin(0),
       () =>
@@ -174,6 +182,37 @@ export class Town extends Phaser.Scene {
     );
     camera.startFollow(this.hero, true);
     fitCamera(this, null);
+  }
+
+  // 届け物で変わったところ。どれも、どの届け物でそうなったかを辿れる（7の場面）。
+  // 入れ物は、届けたときと同じ5つずつ2列の形で小さく描く
+  private changes(): void {
+    const { delivered } = getState();
+    const full = (item: string) => Array<string>(CRATE_SLOTS).fill(item);
+    if (delivered.crossing) {
+      drawCrate(this, CROSSING_AT.x, CROSSING_AT.y, full('rider'), undefined, 'seats').setScale(
+        CHANGE_SCALE,
+      );
+    }
+    if (delivered.net) {
+      drawCrate(this, NET_AT.x, NET_AT.y, full('float'), undefined, 'net').setScale(CHANGE_SCALE);
+      this.add.image(NET_FISHER_AT.x, NET_FISHER_AT.y, 'netFisher').setOrigin(0);
+      this.add.image(FISH_AT.x, FISH_AT.y, 'fish').setOrigin(0);
+    }
+    if (delivered.tally) {
+      for (let n = 0; n < STALL.crates; n += 1) {
+        drawCrate(this, STALL.x, STALL.y + n * STALL.pitch, full('apple')).setScale(CHANGE_SCALE);
+      }
+    }
+    if (delivered.farewell) {
+      this.add.circle(
+        LIGHTHOUSE_AT.x + LAMP.x,
+        LIGHTHOUSE_AT.y + LAMP.y,
+        LAMP.radius,
+        LAMP.color,
+        LAMP.alpha,
+      );
+    }
   }
 
   // 看板には、行き先で採れるものの絵を描いておく

@@ -11,6 +11,7 @@ type Events = {
   say: Say;
   notebook: { onClose?: () => void };
   reply: { onSend: (tally: Tally) => void };
+  reread: { onAct: () => void };
 };
 
 type Listener<K extends keyof Events> = (payload: Events[K]) => void;

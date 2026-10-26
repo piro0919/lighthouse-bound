@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { letters, lines, pageTitles, reply } from '@/story/story1';
+import { letters, lines, pageTitles, reply, reread } from '@/story/story1';
 
 // 物語1はひらがなで始める。1年生のカタカナ（トウカ）は使ってよい。
 // 数字・数式の記号は、どの学年でも画面に出さない（CLAUDE.md の Rules for content）
@@ -11,6 +11,7 @@ const allText = [
   ...Object.values(lines),
   ...Object.values(pageTitles),
   ...Object.values(reply).flat(),
+  ...reread.thoughts,
 ];
 
 describe('story 1 text', () => {
@@ -20,5 +21,15 @@ describe('story 1 text', () => {
 
   it.each(allText)('has no digits or math symbols: %s', (text) => {
     expect(text).not.toMatch(DIGITS_OR_SYMBOLS);
+  });
+});
+
+describe('story 1 rereading', () => {
+  it('has one thought for each line of the first letter', () => {
+    expect(reread.thoughts).toHaveLength(letters.fisher.length);
+  });
+
+  it('acts on the line that carries the worry', () => {
+    expect(letters.fisher[reread.worry]).toContain('おなかが すかない');
   });
 });

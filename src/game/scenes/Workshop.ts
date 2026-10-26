@@ -1,8 +1,9 @@
 import Phaser from 'phaser';
 import { drawBasket, drawCrate } from '../art/containers';
-import { emit } from '../bus';
-import { BAG_LIMIT, lessonDue, pick, stepFiveOpen, stepSixOpen } from '../state';
+import { emit, sayAll } from '../bus';
+import { BAG_LIMIT, farewellDue, lessonDue, pick, stepFiveOpen, stepSixOpen } from '../state';
 import { getState, setState, subscribe } from '../store';
+import { lines } from '@/story/story1';
 import { fillTiles, fitCamera, onLeave, OUTER_MARGIN, STAGE, tappable, TILE } from '../view';
 
 const WALL_ROWS = 3;
@@ -33,6 +34,8 @@ const BASKET_AT = { x: 136, y: 128 };
 const DOOR_AT = { x: 152, y: 28 };
 const HERO_AT = { x: 88, y: 132 };
 const GRANDMA_AT = { x: 60, y: 128 };
+// 7の場面で、漁師の子は戸口の前に立つ
+const CHILD_AT = { x: 152, y: 52 };
 
 // 工房の中。机の手紙を読み、箱とかごに詰め、戸口から町へ出る
 export class Workshop extends Phaser.Scene {
@@ -98,6 +101,16 @@ export class Workshop extends Phaser.Scene {
     if (lessonDue(getState())) {
       this.scene.launch('Lesson');
       this.scene.bringToTop('Hud');
+    }
+
+    // 商人にりんごを売った日の夕方、漁師の子が来る（7の場面）。トウカは子の手紙を読み返し、心配に気づいて港へ行く
+    if (farewellDue(getState())) {
+      this.add.image(CHILD_AT.x, CHILD_AT.y, 'child').setOrigin(0);
+      sayAll([lines.childQuiet, lines.tokaReread], () =>
+        emit('reread', {
+          onAct: () => sayAll([lines.tokaGo], () => this.scene.start('Farewell')),
+        }),
+      );
     }
   }
 

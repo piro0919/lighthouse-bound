@@ -1,6 +1,7 @@
 import Phaser from 'phaser';
 import { Beach, Orchard } from './scenes/Gathering';
 import { Boot } from './scenes/Boot';
+import { Farewell } from './scenes/Farewell';
 import { Fill } from './scenes/Fill';
 import { Gate } from './scenes/Gate';
 import { Hud } from './scenes/Hud';
@@ -30,6 +31,7 @@ export function startGame(parent: HTMLElement): Phaser.Game {
       Fill,
       Lesson,
       Storeroom,
+      Farewell,
       Hud,
     ],
   });

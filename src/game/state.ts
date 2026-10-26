@@ -36,6 +36,8 @@ export type State = {
     crossing: boolean;
     net: boolean;
     tally: boolean;
+    // 7の場面で船を見送ったか。見送ると船はいなくなり、灯台がともる
+    farewell: boolean;
   };
   // こぶねを出した回数。1回目のあとに、おばあちゃんが とおの あいかた を見せる
   ferryTrips: number;
@@ -55,6 +57,7 @@ export function initialState(): State {
       crossing: false,
       net: false,
       tally: false,
+      farewell: false,
     },
     ferryTrips: 0,
     pages: [],
@@ -280,4 +283,13 @@ export function settleTally(
     result: 'thanks',
     truth,
   };
+}
+
+// 7の場面は、6の場面で商人がりんごを全部買ったあと、工房に戻ったところで始まる
+export function farewellDue(state: State): boolean {
+  return state.delivered.tally && !state.delivered.farewell;
+}
+
+export function seeOff(state: State): State {
+  return { ...state, delivered: { ...state.delivered, farewell: true } };
 }

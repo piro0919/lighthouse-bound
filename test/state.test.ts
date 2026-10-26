@@ -16,6 +16,8 @@ import {
   lessonDue,
   merchantAccepts,
   NET_FLOATS,
+  farewellDue,
+  seeOff,
   newHeap,
   packApple,
   heapTotal,
@@ -168,6 +170,7 @@ describe('step 5', () => {
       crossing: false,
       net: false,
       tally: false,
+      farewell: false,
     },
   });
 
@@ -254,5 +257,15 @@ describe('step 6', () => {
     expect(next.delivered.tally).toBe(false);
     expect(next.pages).not.toContain('tens');
     expect(next.storeroom?.crates.every((count) => count === 0)).toBe(true);
+  });
+});
+
+describe('step 7', () => {
+  it('starts after the merchant buys the apples and ends once the ship is seen off', () => {
+    const state = initialState();
+    expect(farewellDue(state)).toBe(false);
+    const sold = { ...state, delivered: { ...state.delivered, tally: true } };
+    expect(farewellDue(sold)).toBe(true);
+    expect(farewellDue(seeOff(sold))).toBe(false);
   });
 });

@@ -165,6 +165,16 @@ const grids: Record<string, string[]> = {
     '.kBbbbbbbk',
     '..kkkkkkk.',
   ],
+  fish: [
+    '........',
+    '.kk...k.',
+    'kjjk.kjk',
+    'kjwjkjjk',
+    'kjjjkjjk',
+    'kjjk.kjk',
+    '.kk...k.',
+    '........',
+  ],
   float: [
     '..kkkk..',
     '.kooook.',
