@@ -118,6 +118,12 @@ Agreed with the owner on 2026-10-26 in this repository's window. Built on the gr
     - On delivery the box on the boat is shown for the first time as the two-rows-of-five crate: the carried apples drop into the slots one by one. Extras roll back into the basket, missing ones leave empty slots. The failure itself shows the shape of the answer
     - A miss ends the day. Back at the workshop the grandmother fills seven slots of the same crate and has the player look at the empty ones, then other fillings; the notebook page とおの あいかた is written as pictures of the crate, no symbols. The next day the delivery succeeds
     - A player who gets it right the first time still gets the page: the grandmother asks how they knew and writes it down
+  - Step 5 in play:
+    - Same wall as step 3 in a different look: one try, and what is already there cannot be seen
+    - The ferry: a letter from the ferryman says four are already aboard and ten fit in all. The ferry has not arrived yet; the player hands boarding tags to people waiting at the gate
+    - The floats: a fisher's net out at sea already has six floats and needs ten; the player brings floats from the workshop shed in one trip
+    - The notebook hangs at the screen's edge at all times and never glows or prompts. Opening it to the とおの あいかた page gives an empty crate the player can fill themselves to see the empty slots; it does not give the answer
+    - No hint in words. On the result, the ferry seats and the floats are shown in two rows of five, like the crate, so a miss shows the same shape again. A miss ends the day; retries are unlimited
 - The hero is a girl, fixed; the player does not choose (owner's pick, 2026-10-26). The owner does not like choosing; Claude agreed because a choice doubles the per-age art and the Atelier series has fixed heroes. Whether kids of this age want to choose was not checked
 - The hero's name is **トウカ** (owner's pick, 2026-10-26). From 灯火 (a lamp's flame); it also holds the "tou" of 灯台 and 東大. Other people in story 1 still go by role
 - The hero's look, in words (Claude's call, delegated, 2026-10-26; the owner decides for real once there is art to see):
