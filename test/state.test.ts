@@ -23,8 +23,7 @@ import {
   heapTotal,
   settleTally,
   stepSixOpen,
-  HEAP_MAX,
-  HEAP_MIN,
+  HEAP_TENS,
   netAccepts,
   netWaiting,
   pick,
@@ -221,8 +220,8 @@ describe('step 6', () => {
   it('makes a two-digit heap that always leaves loose apples', () => {
     for (let n = 0; n < 50; n += 1) {
       const { loose } = newHeap(fixed(n / 50));
-      expect(loose).toBeGreaterThanOrEqual(HEAP_MIN);
-      expect(loose).toBeLessThanOrEqual(HEAP_MAX + 1);
+      expect(loose).toBeGreaterThan(HEAP_TENS.min * CRATE_SLOTS);
+      expect(loose).toBeLessThan((HEAP_TENS.max + 1) * CRATE_SLOTS);
       expect(loose % CRATE_SLOTS).not.toBe(0);
     }
   });
@@ -241,6 +240,14 @@ describe('step 6', () => {
     expect(truth).toEqual({ crates: 3, loose: 7 });
     expect(next.delivered.tally).toBe(true);
     expect(next.pages).toContain('tens');
+    expect(next.sold).toEqual({ crates: 3, loose: 7 });
+  });
+
+  it('writes no page when no crate was filled to ten', () => {
+    const state: State = { ...initialState(), storeroom: { loose: 22, crates: [1] } };
+    const { state: next, result } = settleTally(state, { crates: 2, loose: 3 }, fixed(0));
+    expect(result).toBe('thanks');
+    expect(next.pages).not.toContain('tens');
   });
 
   it('writes no page when the right count was found without crates', () => {

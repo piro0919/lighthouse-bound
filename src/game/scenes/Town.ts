@@ -1,5 +1,13 @@
 import Phaser from 'phaser';
-import { BASKET_WIDTH, CRATE_HEIGHT, CRATE_WIDTH, drawBasket, drawCrate } from '../art/containers';
+import {
+  BASKET_WIDTH,
+  CRATE_HEIGHT,
+  CRATE_WIDTH,
+  drawBasket,
+  drawCrate,
+  filledSlots,
+} from '../art/containers';
+import { drawLamp } from '../art/sprites';
 import { emit, sayAll } from '../bus';
 import {
   CRATE_SLOTS,
@@ -57,8 +65,16 @@ const CHANGE_SCALE = 0.5;
 const CROSSING_AT = { x: 300, y: 330 };
 const NET_AT = { x: 180, y: 300 };
 const FISH_AT = { x: 250, y: 266 };
-const STALL = { x: 318, y: 124, pitch: 12, crates: 3 };
-const LAMP = { x: 12, y: 6, radius: 10, color: 0xf2c14e, alpha: 0.85 };
+const STALL = {
+  x: 318,
+  y: 124,
+  pitchX: 28,
+  pitchY: 12,
+  perRow: 2,
+  looseX: 376,
+  loosePitch: 9,
+  loosePerRow: 5,
+};
 const ENTRANCES = {
   workshop: BUILDINGS.workshop.door,
   orchard: { x: 20, y: 164 },
@@ -187,8 +203,8 @@ export class Town extends Phaser.Scene {
   // 届け物で変わったところ。どれも、どの届け物でそうなったかを辿れる（7の場面）。
   // 入れ物は、届けたときと同じ5つずつ2列の形で小さく描く
   private changes(): void {
-    const { delivered } = getState();
-    const full = (item: string) => Array<string>(CRATE_SLOTS).fill(item);
+    const { delivered, sold } = getState();
+    const full = (item: string) => filledSlots(CRATE_SLOTS, item);
     if (delivered.crossing) {
       drawCrate(this, CROSSING_AT.x, CROSSING_AT.y, full('rider'), undefined, 'seats').setScale(
         CHANGE_SCALE,
@@ -199,20 +215,20 @@ export class Town extends Phaser.Scene {
       this.add.image(NET_FISHER_AT.x, NET_FISHER_AT.y, 'netFisher').setOrigin(0);
       this.add.image(FISH_AT.x, FISH_AT.y, 'fish').setOrigin(0);
     }
-    if (delivered.tally) {
-      for (let n = 0; n < STALL.crates; n += 1) {
-        drawCrate(this, STALL.x, STALL.y + n * STALL.pitch, full('apple')).setScale(CHANGE_SCALE);
+    // 店先には、売った数のとおりに箱とばらを並べる
+    if (sold) {
+      for (let n = 0; n < sold.crates; n += 1) {
+        const x = STALL.x + (n % STALL.perRow) * STALL.pitchX;
+        const y = STALL.y + Math.floor(n / STALL.perRow) * STALL.pitchY;
+        drawCrate(this, x, y, full('apple')).setScale(CHANGE_SCALE);
+      }
+      for (let n = 0; n < sold.loose; n += 1) {
+        const x = STALL.looseX + (n % STALL.loosePerRow) * STALL.loosePitch;
+        const y = STALL.y + Math.floor(n / STALL.loosePerRow) * STALL.loosePitch;
+        this.add.image(x, y, 'apple').setOrigin(0);
       }
     }
-    if (delivered.farewell) {
-      this.add.circle(
-        LIGHTHOUSE_AT.x + LAMP.x,
-        LIGHTHOUSE_AT.y + LAMP.y,
-        LAMP.radius,
-        LAMP.color,
-        LAMP.alpha,
-      );
-    }
+    if (delivered.farewell) drawLamp(this, LIGHTHOUSE_AT);
   }
 
   // 看板には、行き先で採れるものの絵を描いておく

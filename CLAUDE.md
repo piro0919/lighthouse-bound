@@ -170,13 +170,13 @@ Agreed with the owner on 2026-10-26 in this repository's window. Built on the gr
     - All three one-try deliveries share one scene (`Fill.ts`): the crate, the ferry seats and the net are drawn as the same two rows of five, and a miss returns everything and ends the day
   - Step 6 as built (Claude's calls, 2026-10-26):
     - It opens after both step 5 deliveries. The merchant's second letter joins the desk and a door on the workshop's left wall leads to the storeroom
-    - The heap holds 21 to 59 apples, never a multiple of ten, so loose apples always remain; it stays the same until a letter is sent. Six empty crates stand in two columns
+    - The heap holds 21 to 59 apples: the tens (two to five) and the ones (one to nine) are picked separately, so loose apples always remain and every count is equally likely; it stays the same until a letter is sent. Six empty crates stand in two columns
     - Tapping a crate picks it (it lifts a little); while one is picked, tapping a heap apple moves it into that crate. A full crate drops the pick. Apples cannot be taken back out
     - The reply frame is fixed in the polite style (しょうにんさまへ … りんごは、はこが ＿と、＿ です。 トウカより); the player fills the two blanks from crate words (ひとつ to むっつ) and loose words (いっこ to きゅうこ). Closing the reply before sending does not use the try
     - The merchant clears the room and shows the true count as full crates and loose apples, one by one. A wrong letter brings a new heap the next day
-    - The page とおの まとまり is written only when the letter was right and crates were used, because トウカ's line says counting by tens made it quick. A right letter without crates finishes the step with no page
+    - The page とおの まとまり is written only when the letter was right and at least one crate was filled to ten, because トウカ's line says counting by tens made it quick. A right letter without crates finishes the step with no page
   - Step 7 as built (Claude's calls, 2026-10-26):
-    - The town shows each finished delivery in the shape it was delivered in, drawn small: the full ferry seats at sea, the net with all ten floats and the net fisher with a fish, three crates of apples at the merchant's stall. After the farewell the ship is gone and the lighthouse stays lit
+    - The town shows each finished delivery in the shape it was delivered in, drawn small: the full ferry seats at sea, the net with all ten floats and the net fisher with a fish, the apples sold at the merchant's stall as the same full crates and loose apples that were counted. After the farewell the ship is gone and the lighthouse stays lit
     - Coming back to the workshop after the merchant buys the apples starts the evening: the fisher's child stands at the door, and トウカ rereads the child's letter
     - In the rereading every word is a button; a tap reads it and shows トウカ's thought for that line. Nothing is marked wrong. Until the worry line (おなかが すかないように) is touched the letter cannot be closed; after it, any tap goes on
     - On the pier the child calls out to the father, the ship sails off and fades, and the lighthouse lamp lights. A sign leads back to the town

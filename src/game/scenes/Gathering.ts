@@ -1,15 +1,13 @@
 import Phaser from 'phaser';
 import { BAG_LIMIT, pick, type Item } from '../state';
 import { getState, setState } from '../store';
-import { fillTiles, fitCamera, OUTER_MARGIN, STAGE, tappable } from '../view';
+import { exitSign, fillTiles, fitCamera, OUTER_MARGIN, STAGE, tappable } from '../view';
 
 type Spot = { item: Item; x: number; y: number };
 
 const TREE_SCALE = 2;
 // 持ち物の欄（Hud）は横長の画面だと場面の下端に重なるので、下から 48 より上に置く（CLAUDE.md の Design rules）
 const EXIT_AT = { x: 8, y: 120 };
-// 帰り道の看板には工房の戸の絵を小さく描く
-const EXIT_ICON = { x: 5, y: 1, scale: 0.5 };
 
 // 実のなる位置。木（sprites.ts の tree）を2倍にした絵の葉の上に置く
 function treeFruits(item: Item, left: number, top: number): Spot[] {
@@ -70,13 +68,7 @@ abstract class Gathering extends Phaser.Scene {
         setState(pick(getState(), item));
       });
     });
-    tappable(this.add.image(EXIT_AT.x, EXIT_AT.y, 'sign').setOrigin(0), () =>
-      this.scene.start('Town', { from: this.exitTo }),
-    );
-    this.add
-      .image(EXIT_AT.x + EXIT_ICON.x, EXIT_AT.y + EXIT_ICON.y, 'door')
-      .setOrigin(0)
-      .setScale(EXIT_ICON.scale);
+    exitSign(this, EXIT_AT, () => this.scene.start('Town', { from: this.exitTo }));
     fitCamera(this);
   }
 }

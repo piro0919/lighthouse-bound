@@ -1,4 +1,5 @@
 import type Phaser from 'phaser';
+import { CRATE_SLOTS } from '../state';
 
 // 仕切り箱の穴の位置。絵（sprites.ts の crate）と同じく、縁が 2、間隔が 10
 export const CRATE_COLS = 5;
@@ -67,4 +68,9 @@ export function drawBasket(
   });
   container.add(scene.add.image(-SLOT_EDGE, 0, 'basket').setOrigin(0));
   return container;
+}
+
+// 先頭から count 個の穴に item が入った箱の中身
+export function filledSlots(count: number, item = 'apple'): (string | null)[] {
+  return Array.from({ length: CRATE_SLOTS }, (_, slot) => (slot < count ? item : null));
 }

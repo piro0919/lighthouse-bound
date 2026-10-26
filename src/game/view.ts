@@ -68,3 +68,18 @@ export function tappable<T extends Phaser.GameObjects.Image | Phaser.GameObjects
   object.on('pointerdown', onTap);
   return object;
 }
+
+// 前の場所へ戻る看板。工房の戸の絵を小さく描く
+const EXIT_ICON = { x: 5, y: 1, scale: 0.5 };
+
+export function exitSign(
+  scene: Phaser.Scene,
+  at: { x: number; y: number },
+  onTap: () => void,
+): void {
+  tappable(scene.add.image(at.x, at.y, 'sign').setOrigin(0), onTap);
+  scene.add
+    .image(at.x + EXIT_ICON.x, at.y + EXIT_ICON.y, 'door')
+    .setOrigin(0)
+    .setScale(EXIT_ICON.scale);
+}

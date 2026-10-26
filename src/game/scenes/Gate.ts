@@ -1,5 +1,5 @@
 import Phaser from 'phaser';
-import { fillTiles, fitCamera, OUTER_MARGIN, STAGE, tappable, TILE } from '../view';
+import { exitSign, fillTiles, fitCamera, OUTER_MARGIN, STAGE, tappable, TILE } from '../view';
 
 // 渡し舟を待っている町の人。札がいる数より多く並ぶ
 const WAITING = [
@@ -19,7 +19,6 @@ const BELL_AT = { x: 164, y: 20 };
 const WATER_ROWS = 2;
 // 持ち物の欄に重ならないよう、下から 48 より上に置く（CLAUDE.md の Design rules）
 const EXIT_AT = { x: 8, y: 120 };
-const EXIT_ICON = { x: 5, y: 1, scale: 0.5 };
 const RING_ANGLE = 15;
 const RING_MS = 80;
 const TOP_CENTER = { x: 0.5, y: 0 };
@@ -64,13 +63,7 @@ export class Gate extends Phaser.Scene {
       );
     });
 
-    tappable(this.add.image(EXIT_AT.x, EXIT_AT.y, 'sign').setOrigin(0), () =>
-      this.scene.start('Town', { from: 'gate' }),
-    );
-    this.add
-      .image(EXIT_AT.x + EXIT_ICON.x, EXIT_AT.y + EXIT_ICON.y, 'door')
-      .setOrigin(0)
-      .setScale(EXIT_ICON.scale);
+    exitSign(this, EXIT_AT, () => this.scene.start('Town', { from: 'gate' }));
     fitCamera(this);
   }
 }

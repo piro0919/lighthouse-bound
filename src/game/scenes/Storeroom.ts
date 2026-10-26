@@ -1,5 +1,5 @@
 import Phaser from 'phaser';
-import { CRATE_HEIGHT, CRATE_WIDTH, drawCrate } from '../art/containers';
+import { CRATE_HEIGHT, CRATE_WIDTH, drawCrate, filledSlots } from '../art/containers';
 import { emit, sayAll } from '../bus';
 import { CRATE_SLOTS, newHeap, packApple, settleTally, type State, type Tally } from '../state';
 import { getState, setState, subscribe } from '../store';
@@ -39,6 +39,7 @@ const FADE_MS = 700;
 // 机の手紙を触ると返事を書く。出せるのは1回で、商人が来て10ずつ数え直す
 export class Storeroom extends Phaser.Scene {
   private selected: number | null = null;
+  private stopDrawing: () => void = () => undefined;
 
   constructor() {
     super('Storeroom');
@@ -86,7 +87,7 @@ export class Storeroom extends Phaser.Scene {
           CRATE_GRID.y +
           Math.floor(n / CRATE_GRID.perRow) * CRATE_GRID.pitchY -
           (this.selected === n ? LIFT : 0);
-        const view = drawCrate(this, x, y, filled(count));
+        const view = drawCrate(this, x, y, filledSlots(count));
         const zone = this.add
           .zone(x, y, CRATE_WIDTH, CRATE_HEIGHT)
           .setOrigin(0)
@@ -99,8 +100,8 @@ export class Storeroom extends Phaser.Scene {
       });
     };
     drawCrates();
-    const unsubscribe = subscribe(drawCrates);
-    onLeave(this, unsubscribe);
+    this.stopDrawing = subscribe(drawCrates);
+    onLeave(this, () => this.stopDrawing());
     fitCamera(this);
   }
 
@@ -139,6 +140,8 @@ export class Storeroom extends Phaser.Scene {
 
   // 商人が来て、全部を10ずつ箱に詰め直して見せる。合っていれば全部買い、違えばその日はおしまい
   private count(said: Tally): void {
+    // 商人が数え直している間に状態が変わっても、下の箱を描き直さない
+    this.stopDrawing();
     const before = getState();
     const { state, result, truth } = settleTally(before, said, Math.random);
     const newPage = state.pages.includes('tens') && !before.pages.includes('tens');
@@ -153,7 +156,7 @@ export class Storeroom extends Phaser.Scene {
       if (step < truth.crates) {
         const x = TRUTH_CRATES.x + (step % TRUTH_CRATES.perRow) * TRUTH_CRATES.pitchX;
         const y = TRUTH_CRATES.y + Math.floor(step / TRUTH_CRATES.perRow) * TRUTH_CRATES.pitchY;
-        drawCrate(this, x, y, filled(CRATE_SLOTS));
+        drawCrate(this, x, y, filledSlots(CRATE_SLOTS));
       } else if (step < truth.crates + truth.loose) {
         const n = step - truth.crates;
         this.add.image(TRUTH_LOOSE.x + n * TRUTH_LOOSE.pitch, TRUTH_LOOSE.y, 'apple').setOrigin(0);
@@ -189,8 +192,4 @@ export class Storeroom extends Phaser.Scene {
       camera.fadeOut(FADE_MS);
     });
   }
-}
-
-function filled(count: number): (string | null)[] {
-  return Array.from({ length: CRATE_SLOTS }, (_, slot) => (slot < count ? 'apple' : null));
 }

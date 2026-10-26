@@ -1,6 +1,8 @@
 // 持ち物・箱・かごの中身と、届け終えた依頼。Phaser の場面と React の画面の両方から読むので、場面の外に置く
 
-export type Item = 'apple' | 'mandarin' | 'shell' | 'seaweed' | 'float';
+// 持ち物になるもの。React の画面にも同じ絵を出すので、Boot で全部を画像にしておく
+export const ITEMS = ['apple', 'mandarin', 'shell', 'seaweed', 'float'] as const;
+export type Item = (typeof ITEMS)[number];
 
 export const CRATE_SLOTS = 10;
 export const BAG_LIMIT = 20;
@@ -14,10 +16,10 @@ export const LESSON_FILLS = [{ filled: SAILOR_HAS }, { filled: 4 }, { filled: 8 
 export const CROSSING_ABOARD = 4;
 export const NET_FLOATS = 6;
 
-// 6の場面。蔵の空き箱の数と、山のりんごの数の幅。数は2けたで、10の倍数にはしない（ばらが必ず残る）
+// 6の場面。蔵の空き箱の数と、山のりんごの数の幅。
+// 数は2けたで、十の位（はこの数）と一の位（ばらの数）を別々に選ぶ。ばらは必ず1つ以上残る
 export const STOREROOM_CRATES = 6;
-export const HEAP_MIN = 21;
-export const HEAP_MAX = 59;
+export const HEAP_TENS = { min: 2, max: 5 };
 
 // 蔵のりんご。山に残っている数と、箱ごとの数
 export type Storeroom = { loose: number; crates: number[] };
@@ -43,6 +45,8 @@ export type State = {
   ferryTrips: number;
   pages: Page[];
   storeroom: Storeroom | null;
+  // 6の場面で商人に売ったりんご。はこの数と、ばらの数
+  sold: Tally | null;
 };
 
 export function initialState(): State {
@@ -62,6 +66,7 @@ export function initialState(): State {
     ferryTrips: 0,
     pages: [],
     storeroom: null,
+    sold: null,
   };
 }
 
@@ -233,10 +238,9 @@ export function stepSixOpen(state: State): boolean {
 
 // 新しい山。rand は 0 以上 1 未満を返す
 export function newHeap(rand: () => number): Storeroom {
-  const span = HEAP_MAX - HEAP_MIN + 1;
-  let loose = HEAP_MIN + Math.floor(rand() * span);
-  if (loose % CRATE_SLOTS === 0) loose += 1;
-  return { loose, crates: Array<number>(STOREROOM_CRATES).fill(0) };
+  const tens = HEAP_TENS.min + Math.floor(rand() * (HEAP_TENS.max - HEAP_TENS.min + 1));
+  const ones = 1 + Math.floor(rand() * (CRATE_SLOTS - 1));
+  return { loose: tens * CRATE_SLOTS + ones, crates: Array<number>(STOREROOM_CRATES).fill(0) };
 }
 
 export function heapTotal(storeroom: Storeroom): number {
@@ -259,7 +263,8 @@ export type Tally = { crates: number; loose: number };
 export type TallyResult = 'thanks' | 'miss';
 
 // 手紙を出せるのは1回。商人は全部を10ずつ数え直し、合っていれば全部買う。違えばその日はおしまいで、次の日は別の山になる。
-// 箱を使って数えて合っていたら、トウカが自分で とおの まとまり を手帳に書く（教わらずに見つけた道具）
+// 箱を10まで埋めて数え、合っていたら、トウカが自分で とおの まとまり を手帳に書く（教わらずに見つけた道具）。
+// 売った数は町の店先に箱とばらで並ぶ（7の場面）
 export function settleTally(
   state: State,
   said: Tally,
@@ -268,7 +273,7 @@ export function settleTally(
   const storeroom = state.storeroom ?? newHeap(rand);
   const total = heapTotal(storeroom);
   const truth = { crates: Math.floor(total / CRATE_SLOTS), loose: total % CRATE_SLOTS };
-  const usedCrates = storeroom.crates.some((count) => count > 0);
+  const usedCrates = storeroom.crates.some((count) => count === CRATE_SLOTS);
   const right = said.crates * CRATE_SLOTS + said.loose === total;
   if (!right) {
     return { state: { ...state, storeroom: newHeap(rand) }, result: 'miss', truth };
@@ -278,6 +283,7 @@ export function settleTally(
     state: {
       ...withPage,
       storeroom: null,
+      sold: truth,
       delivered: { ...withPage.delivered, tally: true },
     },
     result: 'thanks',

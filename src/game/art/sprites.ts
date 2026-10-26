@@ -580,3 +580,19 @@ export function makeTextures(scene: Phaser.Scene): void {
   pier(scene);
   signpost(scene);
 }
+
+// 灯台の灯。lighthouse の絵の窓に重ねる（7の場面の見送りと、そのあとの町）
+const LAMP = { x: 12, y: 6, radius: 10, color: 0xf2c14e, alpha: 0.85 };
+
+export function drawLamp(
+  scene: Phaser.Scene,
+  lighthouse: { x: number; y: number },
+): Phaser.GameObjects.Arc {
+  return scene.add.circle(
+    lighthouse.x + LAMP.x,
+    lighthouse.y + LAMP.y,
+    LAMP.radius,
+    LAMP.color,
+    LAMP.alpha,
+  );
+}

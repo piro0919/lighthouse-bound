@@ -1,6 +1,7 @@
 'use client';
 
 import { useCallback, useEffect, useState, useSyncExternalStore } from 'react';
+import { filledSlots } from '@/game/art/containers';
 import { on } from '@/game/bus';
 import { CRATE_SLOTS, LESSON_FILLS, type Page } from '@/game/state';
 import { getState, subscribe } from '@/game/store';
@@ -50,7 +51,7 @@ function Crate({
 }
 
 function filledUpTo(count: number): boolean[] {
-  return Array.from({ length: CRATE_SLOTS }, (_, slot) => slot < count);
+  return filledSlots(count).map((slot) => slot !== null);
 }
 
 // とおの あいかた のページ。記号は使わず、箱の絵だけで書く。下の空の箱は、自分で埋めて空きを見るためのもの
@@ -129,7 +130,7 @@ export function Notebook() {
     <>
       <button
         type="button"
-        aria-label={pageTitles[pages[0]]}
+        aria-label={pages.map((page) => pageTitles[page]).join('、')}
         className="fixed top-3 right-3 p-1"
         onClick={() => setOpen(true)}
       >
