@@ -1,5 +1,4 @@
 import type Phaser from 'phaser';
-import type { Item } from '../state';
 
 // 仕切り箱の穴の位置。絵（sprites.ts の crate）と同じく、縁が 2、間隔が 10
 export const CRATE_COLS = 5;
@@ -23,16 +22,17 @@ export function slotPosition(slot: number): { x: number; y: number } {
   };
 }
 
-// 箱の中身を穴の上に1つずつ置く。何が入っていて、どこが空いているかがいつも見える
+// 箱の中身を穴の上に1つずつ置く。board で、同じ並びの座席や網の絵にも替えられる。何が入っていて、どこが空いているかがいつも見える
 export function drawCrate(
   scene: Phaser.Scene,
   x: number,
   y: number,
-  crate: readonly (Item | null)[],
+  crate: readonly (string | null)[],
   onSlotTap?: (slot: number) => void,
+  board = 'crate',
 ): Phaser.GameObjects.Container {
   const container = scene.add.container(x, y);
-  container.add(scene.add.image(0, 0, 'crate').setOrigin(0));
+  container.add(scene.add.image(0, 0, board).setOrigin(0));
   crate.forEach((item, slot) => {
     if (!item) return;
     const { x: sx, y: sy } = slotPosition(slot);
@@ -51,7 +51,7 @@ export function drawBasket(
   scene: Phaser.Scene,
   x: number,
   y: number,
-  basket: readonly Item[],
+  basket: readonly string[],
   onItemTap?: (index: number) => void,
 ): Phaser.GameObjects.Container {
   const container = scene.add.container(x, y);

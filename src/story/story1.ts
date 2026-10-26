@@ -1,6 +1,6 @@
 // 物語1「とおの はこ」の文章。1年生の始めはひらがなを習っている途中なので、漢字は使わない（test/text-rules.test.ts）
 
-export type LetterId = 'fisher' | 'merchant';
+export type LetterId = 'fisher' | 'merchant' | 'crossing' | 'net';
 
 export const letters: Record<LetterId, readonly string[]> = {
   fisher: [
@@ -15,6 +15,21 @@ export const letters: Record<LetterId, readonly string[]> = {
     'みかんを いつつ、かごに いれて、おみせまで とどけて ください。',
     'どうぞ よろしく おねがいします。',
     'みなとの しょうにんより',
+  ],
+  // 5の場面。どちらも、もう入っている分は見えない
+  crossing: [
+    'こうぼうの トウカさんへ',
+    'わたしぶねの のりばで、まって いる ひとに ふだを わたして ください。',
+    'ふねの せきは ぜんぶで とお あります。もう よにん すわって います。',
+    'ふだを もった ひとだけが のれます。わたしぶねが くるのは いちにちに いちど です。',
+    'わたしぶねの せんどうより',
+  ],
+  net: [
+    'こうぼうの トウカちゃんへ',
+    'うみに だした あみに、うきが むっつ ついて いる。',
+    'うきを とおに したい。こうぼうの うきを かごで もって きて おくれ。',
+    'あみの ところへ いけるのは いちど だけ。はまべで まって いるよ。',
+    'あみの りょうしより',
   ],
 };
 
@@ -54,6 +69,17 @@ export const lines = {
   grandmaSaw: 'そうか。あいて いる ところを みたんだね。',
   grandmaName: 'これを、とおの あいかた と よぼう。かいて おこうね。',
   grandmaTomorrow: 'あしたは きっと だいじょうぶ。',
+  // 5の場面
+  crossingThanks: 'せきが ぜんぶ うまった。さあ、しゅっぱつ だ！',
+  crossingOver: 'おっと、すわれない ひとが いるね。',
+  crossingShort: 'おや、まだ せきが あいて いるなあ。',
+  crossingReturn: 'ちょうど うまる ぶんだけ、また あした たのむよ。',
+  netCrate: 'うきは かごで たのむよ。',
+  netNotFloats: 'うきを かごに いれて きて おくれ。',
+  netThanks: 'うきが そろった！ これで あみが まっすぐ うくよ。',
+  netOver: 'おっと、うきが あまって しまったね。',
+  netShort: 'おや、まだ うきが たりないなあ。',
+  netReturn: 'ちょうど とおに なる ぶんを、また あした たのむよ。',
 } as const;
 
 // 道具の手帳のページの名前

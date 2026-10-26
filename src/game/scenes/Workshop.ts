@@ -1,8 +1,8 @@
 import Phaser from 'phaser';
 import { drawBasket, drawCrate } from '../art/containers';
 import { emit } from '../bus';
-import { lessonDue } from '../state';
-import { getState, subscribe } from '../store';
+import { BAG_LIMIT, lessonDue, pick, stepFiveOpen } from '../state';
+import { getState, setState, subscribe } from '../store';
 import { fillTiles, fitCamera, onLeave, OUTER_MARGIN, STAGE, tappable, TILE } from '../view';
 
 const WALL_ROWS = 3;
@@ -11,6 +11,20 @@ const LETTERS = [
   { id: 'fisher', x: 34, y: 78 },
   { id: 'merchant', x: 54, y: 80 },
 ] as const;
+// 5の場面で届く手紙。前の手紙の手前に重ねて置く
+const STEP_FIVE_LETTERS = [
+  { id: 'crossing', x: 30, y: 86 },
+  { id: 'net', x: 60, y: 86 },
+] as const;
+// 小屋の棚の浮き。入り直すと、また並んでいる
+const SHELF_AT = { x: 4, y: 100 };
+const FLOAT_ROWS = 2;
+const FLOATS_PER_ROW = 6;
+const FLOAT_PITCH = 9;
+const FLOAT_INSET = { x: 2, y: 3 };
+const FLOAT_ROW_PITCH = 13;
+// 浮きは間が狭いので、触れる範囲を隣と重ならない広さにとどめる
+const FLOAT_TAP_PAD = 0;
 const CRATE_AT = { x: 116, y: 84 };
 const BASKET_AT = { x: 136, y: 128 };
 const DOOR_AT = { x: 152, y: 28 };
@@ -29,9 +43,11 @@ export class Workshop extends Phaser.Scene {
     fillTiles(this, 'wall', -OUTER_MARGIN, 0, span, WALL_ROWS * TILE);
 
     this.add.image(DESK.x, DESK.y, 'desk').setOrigin(0);
-    LETTERS.forEach(({ id, x, y }) => {
+    const stepFive = stepFiveOpen(getState());
+    [...LETTERS, ...(stepFive ? STEP_FIVE_LETTERS : [])].forEach(({ id, x, y }) => {
       tappable(this.add.image(x, y, 'letter').setOrigin(0), () => emit('letter', id));
     });
+    if (stepFive) this.shelf();
 
     tappable(this.add.image(DOOR_AT.x, DOOR_AT.y, 'door').setOrigin(0), () =>
       this.scene.start('Town', { from: 'workshop' }),
@@ -69,6 +85,26 @@ export class Workshop extends Phaser.Scene {
     if (lessonDue(getState())) {
       this.scene.launch('Lesson');
       this.scene.bringToTop('Hud');
+    }
+  }
+
+  // 浮きの棚。触った浮きが持ち物に入る
+  private shelf(): void {
+    this.add.image(SHELF_AT.x, SHELF_AT.y, 'shelf').setOrigin(0);
+    for (let n = 0; n < FLOAT_ROWS * FLOATS_PER_ROW; n += 1) {
+      const x = SHELF_AT.x + FLOAT_INSET.x + (n % FLOATS_PER_ROW) * FLOAT_PITCH;
+      const y = SHELF_AT.y + FLOAT_INSET.y + Math.floor(n / FLOATS_PER_ROW) * FLOAT_ROW_PITCH;
+      const image = this.add.image(x, y, 'float').setOrigin(0);
+      tappable(
+        image,
+        () => {
+          if (!image.visible || getState().bag.length >= BAG_LIMIT) return;
+          image.setVisible(false);
+          image.disableInteractive();
+          setState(pick(getState(), 'float'));
+        },
+        FLOAT_TAP_PAD,
+      );
     }
   }
 

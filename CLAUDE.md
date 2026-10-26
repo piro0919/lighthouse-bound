@@ -101,7 +101,7 @@ Claude's calls, delegated by the owner on 2026-10-26 ("no preference").
 ## Code
 
 - `pnpm dev`, `pnpm lint`, `pnpm typecheck`, `pnpm test`, `pnpm build`. lefthook runs eslint, prettier and the typecheck on commit and the tests on push
-- `src/game/` is the Phaser side: `main.ts` (config), `scenes/` (Boot, Workshop, Town, Orchard and Beach in `Gathering.ts`, Packing, Plates, Ferry, Lesson, Hud), `state.ts` (pure rules for bag, crate, basket, deliveries, the ferry and notebook pages), `store.ts` (the one shared state), `bus.ts` (Phaser asks React to show a letter, a line or the notebook)
+- `src/game/` is the Phaser side: `main.ts` (config), `scenes/` (Boot, Workshop, Town, Orchard and Beach in `Gathering.ts`, Gate, Packing, Plates, Fill, Lesson, Hud), `state.ts` (pure rules for bag, crate, basket, deliveries, the ferry and notebook pages), `store.ts` (the one shared state), `bus.ts` (Phaser asks React to show a letter, a line or the notebook)
 - `src/components/` is the React side: `Game.tsx` loads Phaser in the browser, `TextLayer.tsx` shows letters and lines in a normal font, read aloud on tap (`src/lib/speak.ts`, the browser's speech for now), `Notebook.tsx` is the tools' notebook. React draws the same pixel art through `src/game/art/images.ts` (Boot turns the textures into image URLs) and `Sprite.tsx`
 - In development, `window.__game` and `window.__store` let check scripts read the scenes and the state
 - `src/story/story1.ts` holds all story 1 text
@@ -163,6 +163,11 @@ Agreed with the owner on 2026-10-26 in this repository's window. Built on the gr
     - He takes the apples only when they fill the box exactly. On a miss the shape is shown (extras bounce back, or slots stay empty), then every carried apple comes back to the basket, he asks for "just the amount that makes ten" tomorrow, and the day ends. The box stays at seven
     - The grandmother is in the workshop from the start. After the first ferry trip, entering the workshop starts step 4: she fills seven, then four, then eight; the player taps the empty slots each time, and she says the pair in words (ななつと みっつで、とお)
     - The notebook page shows those three crates and one empty crate the player can fill. The notebook hangs at the top right as soon as it has a page
+  - Step 5 as built (Claude's calls, 2026-10-26):
+    - It opens after the sailor has his apples and the page is written. Two letters join the desk: the ferryman (four seated, ten seats, only people with a tag board, the ferry comes once a day) and the net fisher (six floats on the net, wants ten, one trip, waiting on the beach)
+    - The gate is a sign by the pier. Nine townspeople wait; tapping one hands a tag, tapping again takes it back. Ringing the bell brings the ferry, which is the one try
+    - The floats sit on a shelf in the workshop (the "shed" of the spec) and are carried in the basket, like the apples
+    - All three one-try deliveries share one scene (`Fill.ts`): the crate, the ferry seats and the net are drawn as the same two rows of five, and a miss returns everything and ends the day
   - Step 5 in play:
     - Same wall as step 3 in a different look: one try, and what is already there cannot be seen
     - The ferry: a letter from the ferryman says four are already aboard and ten fit in all. The ferry has not arrived yet; the player hands boarding tags to people waiting at the gate

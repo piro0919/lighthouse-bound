@@ -1,16 +1,23 @@
 import { describe, expect, it } from 'vitest';
 import {
   BAG_LIMIT,
+  boardCrossing,
   bagToBasket,
   bagToCrate,
   CRATE_SLOTS,
+  CROSSING_ABOARD,
+  crossingWaiting,
   crateToBag,
   deliverToFisher,
+  deliverFloats,
   initialState,
   judgeFisher,
-  judgeSailor,
+  judgeFill,
   lessonDue,
   merchantAccepts,
+  NET_FLOATS,
+  netAccepts,
+  netWaiting,
   pick,
   SAILOR_HAS,
   sailorAccepts,
@@ -98,7 +105,7 @@ describe('sailor', () => {
       (next) => bagToBasket(next, 0),
       withBag(Array<Item>(apples).fill('apple')),
     );
-    return { ...state, delivered: { fisher: true, merchant: true, sailor: false } };
+    return { ...state, delivered: { ...state.delivered, fisher: true, merchant: true } };
   };
 
   it('waits at the pier only after both letters are delivered', () => {
@@ -113,9 +120,9 @@ describe('sailor', () => {
   });
 
   it('takes the apples only when they fill the box exactly', () => {
-    expect(judgeSailor(CRATE_SLOTS - SAILOR_HAS)).toBe('thanks');
-    expect(judgeSailor(CRATE_SLOTS - SAILOR_HAS + 1)).toBe('over');
-    expect(judgeSailor(CRATE_SLOTS - SAILOR_HAS - 1)).toBe('short');
+    expect(judgeFill(SAILOR_HAS, CRATE_SLOTS - SAILOR_HAS)).toBe('thanks');
+    expect(judgeFill(SAILOR_HAS, CRATE_SLOTS - SAILOR_HAS + 1)).toBe('over');
+    expect(judgeFill(SAILOR_HAS, CRATE_SLOTS - SAILOR_HAS - 1)).toBe('short');
   });
 
   it('returns every apple on a miss and counts the trip', () => {
@@ -141,5 +148,44 @@ describe('sailor', () => {
     const written = writePage(state, 'pairs');
     expect(lessonDue(written)).toBe(false);
     expect(writePage(written, 'pairs').pages).toEqual(['pairs']);
+  });
+});
+
+describe('step 5', () => {
+  const afterSailor = (): State => ({
+    ...writePage(initialState(), 'pairs'),
+    delivered: { fisher: true, merchant: true, sailor: true, crossing: false, net: false },
+  });
+
+  it('opens once the sailor has his apples and the page is written', () => {
+    expect(crossingWaiting(initialState())).toBe(false);
+    expect(netWaiting(initialState())).toBe(false);
+    expect(crossingWaiting(afterSailor())).toBe(true);
+    expect(netWaiting(afterSailor())).toBe(true);
+  });
+
+  it('boards the ferry only when the tags fill every seat', () => {
+    expect(boardCrossing(afterSailor(), CRATE_SLOTS - CROSSING_ABOARD - 1).result).toBe('short');
+    expect(boardCrossing(afterSailor(), CRATE_SLOTS - CROSSING_ABOARD + 1).result).toBe('over');
+    const { state, result } = boardCrossing(afterSailor(), CRATE_SLOTS - CROSSING_ABOARD);
+    expect(result).toBe('thanks');
+    expect(crossingWaiting(state)).toBe(false);
+  });
+
+  it('takes the floats only when they fill the net, and returns them otherwise', () => {
+    const carrying = (floats: number): State =>
+      Array.from({ length: floats }).reduce<State>(
+        (next) => bagToBasket(next, 0),
+        Array<Item>(floats).fill('float').reduce(pick, afterSailor()),
+      );
+    expect(netAccepts(['float', 'apple'])).toBe(false);
+    expect(netAccepts(['float'])).toBe(true);
+    const missed = deliverFloats(carrying(CRATE_SLOTS - NET_FLOATS + 1));
+    expect(missed.result).toBe('over');
+    expect(missed.state.basket).toHaveLength(CRATE_SLOTS - NET_FLOATS + 1);
+    const done = deliverFloats(carrying(CRATE_SLOTS - NET_FLOATS));
+    expect(done.result).toBe('thanks');
+    expect(done.state.basket).toHaveLength(0);
+    expect(netWaiting(done.state)).toBe(false);
   });
 });

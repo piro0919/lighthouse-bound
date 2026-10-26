@@ -165,6 +165,38 @@ const grids: Record<string, string[]> = {
     '.kBbbbbbbk',
     '..kkkkkkk.',
   ],
+  float: [
+    '..kkkk..',
+    '.kooook.',
+    'kowoooOk',
+    'kwwwwwwk',
+    'koooooOk',
+    'kooooOOk',
+    '.kOOOOk.',
+    '..kkkk..',
+  ],
+  // 座席に座った人。顔と肩だけ描き、人ごとに色を変える
+  rider: [
+    '..kkkk..',
+    '.kffffk.',
+    '.kfssfk.',
+    '.ksksks.',
+    '..kssk..',
+    '.kjjjjk.',
+    'kjjjjjjk',
+    'kkkkkkkk',
+  ],
+  // 渡し舟の札
+  tag: [
+    '.kkkkkk.',
+    'kiiiiiik',
+    'kiIIIIik',
+    'kiiiiiik',
+    'kiIIIiik',
+    'kiiiiiik',
+    '.kkkkkk.',
+    '........',
+  ],
   apple: [
     '...kG...',
     '..kGk...',
@@ -232,6 +264,19 @@ const grids: Record<string, string[]> = {
   ],
 };
 
+// 同じ形の絵を、色だけ替えて別の人にする
+function recolor(grid: string[], swaps: Record<string, string>): string[] {
+  return grid.map((row) => [...row].map((ch) => swaps[ch] ?? ch).join(''));
+}
+
+grids.ferryman = recolor(grids.sailor, { n: 'T', N: 'T', w: 'i' });
+grids.netFisher = recolor(grids.sailor, { n: 'G', N: 'G', w: 'l' });
+// のりばで渡し舟を待つ町の人たち
+grids.folkA = recolor(grids.child, { f: 'h', j: 'r' });
+grids.folkB = recolor(grids.child, { f: 'y', j: 'v' });
+grids.folkC = recolor(grids.merchant, { T: 'f', t: 'o' });
+grids.folkD = recolor(grids.child, { f: 'T', j: 'l' });
+
 function drawGrid(scene: Phaser.Scene, key: string, grid: string[]): void {
   const g = scene.add.graphics();
   grid.forEach((row, y) => {
@@ -291,22 +336,27 @@ function wall(scene: Phaser.Scene): void {
   g.destroy();
 }
 
-// 5つずつ2列の仕切り箱。仕切りの穴は 8×8 で、間隔は 10
-function crate(scene: Phaser.Scene): void {
+// 5つずつ2列の仕切り箱。仕切りの穴は 8×8 で、間隔は 10。
+// 渡し舟の座席と網の浮きも同じ形に並べ、どれも同じ形の問題に見えるようにする（5の場面）
+function board(
+  scene: Phaser.Scene,
+  key: string,
+  colors: { edge: number; body: number; hole: number },
+): void {
   const g = scene.add.graphics();
   const w = CRATE_WIDTH;
   const h = CRATE_HEIGHT;
-  g.fillStyle(0x2b1d14);
+  g.fillStyle(colors.edge);
   g.fillRect(0, 0, w, h);
-  g.fillStyle(0x9a6a3c);
+  g.fillStyle(colors.body);
   g.fillRect(1, 1, w - 2, h - 2);
-  g.fillStyle(0x5a3a1e);
+  g.fillStyle(colors.hole);
   for (let row = 0; row < CRATE_ROWS; row += 1) {
     for (let col = 0; col < CRATE_COLS; col += 1) {
       g.fillRect(SLOT_EDGE + col * SLOT_PITCH, SLOT_EDGE + row * SLOT_PITCH, SLOT_HOLE, SLOT_HOLE);
     }
   }
-  g.generateTexture('crate', w, h);
+  g.generateTexture(key, w, h);
   g.destroy();
 }
 
@@ -452,6 +502,36 @@ function pier(scene: Phaser.Scene): void {
   g.destroy();
 }
 
+// 工房の小屋の棚。浮きを並べて置く
+function shelf(scene: Phaser.Scene): void {
+  const g = scene.add.graphics();
+  g.fillStyle(0x2b1d14);
+  g.fillRect(0, 0, 58, 28);
+  g.fillStyle(0x9a6a3c);
+  g.fillRect(1, 1, 56, 26);
+  g.fillStyle(0x6b4524);
+  g.fillRect(1, 12, 56, 2);
+  g.fillRect(1, 25, 56, 2);
+  g.generateTexture('shelf', 58, 28);
+  g.destroy();
+}
+
+// のりばの鐘。鳴らすと渡し舟が来る
+function bell(scene: Phaser.Scene): void {
+  const g = scene.add.graphics();
+  g.fillStyle(0x6b4524);
+  g.fillRect(7, 0, 2, 4);
+  g.fillRect(0, 0, 16, 2);
+  g.fillStyle(0x2b1d14);
+  g.fillRect(3, 4, 10, 10);
+  g.fillStyle(0xf2c14e);
+  g.fillRect(4, 5, 8, 8);
+  g.fillStyle(0x2b1d14);
+  g.fillRect(7, 14, 2, 2);
+  g.generateTexture('bell', 16, 16);
+  g.destroy();
+}
+
 function signpost(scene: Phaser.Scene): void {
   const g = scene.add.graphics();
   g.fillStyle(0x6b4524);
@@ -472,7 +552,11 @@ export function makeTextures(scene: Phaser.Scene): void {
   tile(scene, 'water', 0x4a90c8, 0x7fb6e0, 4);
   floor(scene);
   wall(scene);
-  crate(scene);
+  board(scene, 'crate', { edge: 0x2b1d14, body: 0x9a6a3c, hole: 0x5a3a1e });
+  board(scene, 'seats', { edge: 0x2b1d14, body: 0x7a4f2c, hole: 0xc9bfa5 });
+  board(scene, 'net', { edge: 0xd7b98a, body: 0x4a90c8, hole: 0x3a78a8 });
+  shelf(scene);
+  bell(scene);
   tree(scene);
   desk(scene);
   plate(scene);

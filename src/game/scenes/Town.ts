@@ -3,8 +3,11 @@ import { BASKET_WIDTH, CRATE_HEIGHT, CRATE_WIDTH, drawBasket, drawCrate } from '
 import { emit, sayAll } from '../bus';
 import {
   CRATE_SLOTS,
+  crossingWaiting,
   deliverToFisher,
   merchantAccepts,
+  netAccepts,
+  netWaiting,
   SAILOR_HAS,
   sailorAccepts,
   sailorWaiting,
@@ -46,12 +49,17 @@ const PIER = { x: 360, width: TILE, length: TILE * PIER_TILES };
 const FERRY_AT = { x: 378, y: 300 };
 const SHIP_AT = { x: 260, y: 318 };
 const SAILOR_AT = { x: 378, y: 262 };
+// 5の場面。渡し舟の のりばの看板と、浜で待つ網の漁師
+const GATE_SIGN = { x: 326, y: 244 };
+const NET_FISHER_AT = { x: 232, y: 256 };
 const ENTRANCES = {
   workshop: BUILDINGS.workshop.door,
   orchard: { x: 20, y: 164 },
   beach: { x: 148, y: 260 },
   merchant: BUILDINGS.merchant.door,
   pier: { x: PIER.x + PIER.width / 2, y: WATER_Y - HERO_HALF },
+  gate: { x: GATE_SIGN.x + TILE / 2, y: WATER_Y - HERO_HALF },
+  net: { x: NET_FISHER_AT.x - TILE / 2, y: WATER_Y - HERO_HALF },
 } as const;
 
 type From = keyof typeof ENTRANCES;
@@ -114,6 +122,16 @@ export class Town extends Phaser.Scene {
     tappable(this.add.image(FERRY_AT.x, FERRY_AT.y, 'ferry').setOrigin(0), visitPier);
     if (sailorWaiting(getState())) {
       tappable(this.add.image(SAILOR_AT.x, SAILOR_AT.y, 'sailor').setOrigin(0), visitPier);
+    }
+    if (crossingWaiting(getState())) {
+      this.sign(GATE_SIGN, 'tag', () =>
+        this.walkTo(ENTRANCES.gate.x, ENTRANCES.gate.y, () => this.scene.start('Gate')),
+      );
+    }
+    if (netWaiting(getState())) {
+      tappable(this.add.image(NET_FISHER_AT.x, NET_FISHER_AT.y, 'netFisher').setOrigin(0), () =>
+        this.walkTo(ENTRANCES.net.x, ENTRANCES.net.y, () => this.atNet()),
+      );
     }
     tappable(
       this.add.image(BUILDINGS.workshop.x, BUILDINGS.workshop.y, 'workshop').setOrigin(0),
@@ -249,10 +267,25 @@ export class Town extends Phaser.Scene {
             emit('say', { text: lines.sailorNotApples });
             return;
           }
-          this.scene.start('Ferry');
+          this.scene.start('Fill', { job: 'sailor' });
         });
       },
     );
+  }
+
+  // 網の漁師には、浮きだけを入れたかごを渡す。違うものなら断るので、1回に数えない
+  private atNet(): void {
+    this.choose((target) => {
+      if (target === 'crate') {
+        emit('say', { text: lines.netCrate });
+        return;
+      }
+      if (!netAccepts(getState().basket)) {
+        emit('say', { text: lines.netNotFloats });
+        return;
+      }
+      this.scene.start('Fill', { job: 'net' });
+    });
   }
 
   // 戸口で、箱とかごのどちらを渡すかを選ぶ。外を触るとやめる
