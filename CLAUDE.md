@@ -106,7 +106,12 @@ Agreed with the owner on 2026-10-26 in this repository's window. Built on the gr
   7. The town changes. The ship leaves, the lighthouse is lit at night; reading the requester's feelings from the words of their letter. Japanese: imagining a character's actions from the scene
 - Left out of story 1: formulas and the symbols + − = (no symbols on screen); shapes, comparing lengths, telling time and picture charts (grade 1 content, moved to story 2 or the workshop's daily life); handwriting posture (cannot be done by touch)
 - The first tool is named **とおの あいかた** (Claude's call, delegated). It names the pair itself (7 and 3, 4 and 6), so it does not tie the tool to boxes and works in step 5; the other candidate, はこの すきま, did
-- Undecided: the characters' names, the story title
+- Details below are Claude's calls (the owner delegated the details of story 1 on 2026-10-26):
+  - The workshop's master is the hero's grandmother. Family needs no reason for living together, and over twelve stories she ages while the hero grows
+  - Story 1 gives no proper names. People are called by role (おばあちゃん, the fisher's child, the sailor), which also keeps the text free of kanji
+  - One thread ties the steps: the first letter (step 1) is from the fisher's child, whose father is the sailor of step 3 and is about to go to sea; the apples are for his voyage. In step 7 the hero rereads that letter, notices the child's worry, and sees the ship off with the child as the lighthouse is lit
+  - Title: とおの はこ
+- Undecided: the hero (look, gender or player choice, name)
 
 ## Name
 
