@@ -59,6 +59,7 @@ Nothing is built yet. Everything below, except the Undecided section, was agreed
   - What you make grows with the grades: story 1 is reading a letter to understand the request and getting the count right; crafting (調合) joins from story 3 when science starts; world history brings requests from across borders
 - Kept from Atelier: gathering, crafting, requests. Dropped: combat (no subject needs it and it did not sit right with the owner), time limits (feel like homework deadlines)
 - Crafting covers science (combining things changes their nature)
+- Tools live in **the workshop notebook** (Claude's call, delegated, 2026-10-26): each way of thinking the hero learns becomes a page, and the player opens the notebook to use one when stuck. Chosen over physical items (some later tools, such as causes in history, have no object form) and companions (art for one person per tool). "Notebook" is a working label, not a decided name
 - Japanese: the words the hero can use grow, they learn to read other people's feelings, and the story gets more complex
 - English: characters who speak English
 
@@ -115,6 +116,5 @@ Agreed with the owner on 2026-10-26 in this repository's window. Built on the gr
 ## Undecided
 
 - How crafting works. Claude's idea, not accepted: results depend on which materials and how much of each; amounts carry arithmetic (exactly 10 in the pot finishes it), growing into ratio and concentration later
-- Where the tools live in the loop (the hero's abilities, items, companions, …)
 - Tech stack
 - Who pays, if anyone, later
