@@ -1,0 +1,104 @@
+# Lighthouse Bound
+
+A web game for elementary school kids, shaped like a simplified Atelier game. The player grows up in a harbor town over twelve stories, one per school year from first grade of elementary school to the last year of high school, and picks up the ways of thinking that school subjects teach without ever feeling like they are studying.
+
+Nothing is built yet. Everything below, except the Undecided section, was agreed with the owner in a sounding-board session on 2026-10-26 (in the home window; the log is `~/.claude/projects/-Users-piro/402b6931-3e1a-45d8-99f8-d05e2de0642c.jsonl`). Do not change the spec, the look or the name without the owner's word.
+
+## Goal
+
+- The kid plays it themselves. Not a tool for parents or teachers
+- Zero feeling of studying. The owner means all of these: problems or formulas on screen, right/wrong marks and scores, and the feeling of being made to do it
+- The final goal: kids who play it get good test scores earlier and pass the entrance exam of **the University of Tokyo, Science II (理科二類)**. The owner picked Science II after the 2021 TV drama of Dragon Zakura 2, where Sakuragi tells the science-track students to aim for it (source: a quote-collection site, not the drama itself; the "lowest passing score" reason comes from blogs, not from official data)
+- **Nothing unrelated to passing that exam goes in.** The owner was annoyed at being asked again for each subject. Apply this rule yourself; do not ask subject by subject
+- The game builds the foundation of how to think. Test scores are the job of school and cram school; the game makes that study easier
+- Calculation is a means, not the goal. The point is that playing teaches how to learn: try, fail, adjust; understand why something works; carry an idea over to a different situation
+- For high school content, the aim is grasping the idea by feel (e.g. calculus as "how fast something changes"), not being able to solve the exam problems
+
+## Position
+
+- First released as a free work. The usage record (which part was played how often, where kids stopped) is the first-hand information
+- Background: as a side business it would fall outside the owner's "B2B only" rule, and the owner has no direct contact with kids, parents, after-school care or cram schools, so who would pay could not be checked. Finding a payer comes after it is being used
+- Private after-school care (民間学童) was Claude's guess for a future payer; unverified
+
+## Subjects
+
+- Only subjects on the Science II exam:
+  - Common Test: Japanese, math (2), science (2), foreign language, Information I, one of geography/history/civics
+  - Second-stage exam: Japanese, math, science (2), foreign language
+  - Source checked: the University of Tokyo exam notice PDF (`https://www.u-tokyo.ac.jp/content/400192478.pdf`) for the Common Test choices; Obunsha Passnavi for the rest (year not clearly stated; recheck against the official guidelines)
+- So: Japanese, arithmetic/math, science, English, Information, and **world history** as the one history/civics subject
+  - World history was Claude's call (delegated): history is a chain of causes and fits a story better than geography; world history fits a made-up world with many countries better than Japanese history
+  - Japanese history is out
+- Out: P.E., music, art, moral education, and 生活 (the grade 1–2 life-environment subject)
+- Elementary school has no science or social studies in grades 1–2 (they start in grade 3, per the School Education Act Enforcement Regulations, appended table 1). Information appears only from the high school stories. English starts where school starts it
+- Content follows the order of the national curriculum guidelines (学習指導要領), not any one textbook publisher
+
+## Rules for content
+
+- **No formulas or symbols on screen, in any grade.** Linking the game to the formulas taught at school is left to school. The owner said this one is absolute
+- Subjects are never shown as subjects in the game. Which tool covers which unit is tracked on the developer side
+- Designing per subject on the developer side is fine
+- A way of thinking is a **tool**:
+  1. The player first hits a situation their current way cannot get past
+  2. They get the idea as a tool, with an in-game name (never the math term)
+  3. The tool works in situations that look completely different, and the player brings it out themselves
+  - The point of 3: unlike catching a ball (which is calculus-like but never leaves the game of catch), choosing to bring the tool out means the player knows what it is for
+- Motivation matters: what the idea lets you do, and why you would want it, comes before the idea
+- History shows causes, not event names. "Why do wars happen", not "World War II". Looking back, it turns out to follow real history
+  - Interpretations of history differ. Show several causes interacting rather than one single story
+  - Leave hints that let a kid notice "that's the thing from the game" when they learn it at school (e.g. black ships arriving from across the sea), without real names
+- Numbers in the game must always be traceable. The owner dislikes incremental games where you lose track of why the numbers go up
+
+## The game
+
+- Model: **the Atelier series, simplified**. The game part stays simple because the range is so wide
+- Not a puzzle game. Not "obviously for kids" (the owner rejected a cute rabbits-on-a-boat idea as boring)
+- Core loop (provisional, the owner called it "a vague axis"): **take requests, make things, deliver them**
+  - The hero lives in a workshop in the harbor town and gets requests from townspeople, sailors and merchants from far countries
+  - Delivering changes the town and its people
+  - What you make grows with the grades: story 1 is reading a letter to understand the request and getting the count right; crafting (調合) joins from story 3 when science starts; world history brings requests from across borders
+- Kept from Atelier: gathering, crafting, requests. Dropped: combat (no subject needs it and it did not sit right with the owner), time limits (feel like homework deadlines)
+- Crafting covers science (combining things changes their nature)
+- Japanese: the words the hero can use grow, they learn to read other people's feelings, and the story gets more complex
+- English: characters who speak English
+
+## World and story
+
+- Twelve stories, one per school year: story 1 is grade 1 of elementary school, story 12 is the last year of high school
+- The hero grows up with the player, from age 6 to 18
+- A made-up world. **No real names** of countries, people or events. Events follow the same causes as real history
+- The hero's country is a trading harbor town where ships and merchants from everywhere gather. World history is told from there: changes in far countries arrive at the port as requests, goods and newcomers
+
+## Text
+
+- Each story uses only the kanji taught up to that grade (学年別漢字配当表). Grade 1 is 80 kanji (checked against secondary sources, not the ministry's text)
+- Story 1 starts in hiragana
+
+## Look
+
+- Atelier-like art
+- The hero needs art for each age; this is where the art workload grows most
+
+## Platform
+
+- Web. Phones, tablets and school-issued devices (e.g. Chromebooks) all have to work. Touch first, small screens first
+
+## First release
+
+- Story 1: grade 1 Japanese and arithmetic. Story 1 is basically a prologue
+- The first unit of arithmetic is composing and decomposing 10 (10は3と7). Claude's pick (delegated): it is the first number concept in grade 1 and carry/borrow addition and subtraction sit on top of it
+- Whether to include story 2 in the first release: decide later (the owner called it negligible)
+- Concern noted: since the game has one core, the prologue has to show the whole loop and be fun, or players leave before later stories exist
+
+## Name
+
+- **Lighthouse Bound** (owner's pick, 2026-10-26). 灯台 (lighthouse) and 東大 (the University of Tokyo) are both read "toudai"; "bound" means heading for it. A lighthouse also fits the harbor town
+- "To the Lighthouse" was avoided: it is the English title of Virginia Woolf's novel
+
+## Undecided
+
+- How crafting works. Claude's idea, not accepted: results depend on which materials and how much of each; amounts carry arithmetic (exactly 10 in the pot finishes it), growing into ratio and concentration later
+- How "composing 10" and grade 1 Japanese appear as requests in story 1 (next topic)
+- Where the tools live in the loop (the hero's abilities, items, companions, …)
+- Tech stack
+- Who pays, if anyone, later
