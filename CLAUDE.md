@@ -111,7 +111,8 @@ Agreed with the owner on 2026-10-26 in this repository's window. Built on the gr
   - Story 1 gives no proper names. People are called by role (おばあちゃん, the fisher's child, the sailor), which also keeps the text free of kanji
   - One thread ties the steps: the first letter (step 1) is from the fisher's child, whose father is the sailor of step 3 and is about to go to sea; the apples are for his voyage. In step 7 the hero rereads that letter, notices the child's worry, and sees the ship off with the child as the lighthouse is lit
   - Title: とおの はこ
-- Undecided: the hero (look, gender or player choice, name)
+- The hero is a girl, fixed; the player does not choose (owner's pick, 2026-10-26). The owner does not like choosing; Claude agreed because a choice doubles the per-age art and the Atelier series has fixed heroes. Whether kids of this age want to choose was not checked
+- Undecided: the hero's look and name
 
 ## Name
 
