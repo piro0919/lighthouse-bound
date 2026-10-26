@@ -113,7 +113,11 @@ Agreed with the owner on 2026-10-26 in this repository's window. Built on the gr
   - Title: とおの はこ
 - The hero is a girl, fixed; the player does not choose (owner's pick, 2026-10-26). The owner does not like choosing; Claude agreed because a choice doubles the per-age art and the Atelier series has fixed heroes. Whether kids of this age want to choose was not checked
 - The hero's name is **トウカ** (owner's pick, 2026-10-26). From 灯火 (a lamp's flame); it also holds the "tou" of 灯台 and 東大. Other people in story 1 still go by role
-- Undecided: the hero's look
+- The hero's look, in words (Claude's call, delegated, 2026-10-26; the owner decides for real once there is art to see):
+  - Shoulder-length chestnut hair, amber eyes
+  - A small lantern-shaped hairpin from her grandmother, worn in every story from age 6 to 18 so she reads as the same person; it also echoes 灯火
+  - Her grandmother's workshop apron over a navy dress. At 6 the apron is far too big and rolled up; it fits as she grows, so the apron itself shows her growth
+  - The tools' notebook hangs from a strap at her waist
 
 ## Name
 
