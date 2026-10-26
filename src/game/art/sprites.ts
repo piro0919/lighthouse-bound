@@ -39,6 +39,7 @@ const palette: Record<string, number> = {
   j: 0x3a9d8f,
   t: 0x4a6b3a,
   T: 0x5a3a2a,
+  y: 0xc8c4bc,
 };
 
 const grids: Record<string, string[]> = {
@@ -113,6 +114,56 @@ const grids: Record<string, string[]> = {
     '...kttttttttk...',
     '...kNNNNNNNNk...',
     '....kBk..kBk....',
+  ],
+  // おばあちゃん。白髪をまとめ、緑の服に工房のエプロン
+  grandma: [
+    '......kkkk......',
+    '.....kyyyyk.....',
+    '....kyyyyyyk....',
+    '...kyyyyyyyyk...',
+    '...kyssssssyk...',
+    '...kyskssksyk...',
+    '...kysssSssyk...',
+    '....kssssssk....',
+    '....kvvvvvvk....',
+    '...kvvaaaavvk...',
+    '..kskvaaaavksk..',
+    '..kskvaaaavksk..',
+    '...kvaaaaaavk...',
+    '...kvvvvvvvvk...',
+    '...kvvvvvvvvk...',
+    '....kBk..kBk....',
+  ],
+  // 漁師の子の父親の船乗り。紺の帽子に縞の服
+  sailor: [
+    '................',
+    '.....kkkkkk.....',
+    '....knnnnnnk....',
+    '...knnnnnnnnk...',
+    '...kkkkkkkkkk...',
+    '...kSssssssSk...',
+    '...kskssssksk...',
+    '...kssssSsssk...',
+    '....kBBBBBBk....',
+    '....kwnwnwnk....',
+    '...kwnwnwnwnk...',
+    '..kskwnwnwnksk..',
+    '..kskwnwnwnksk..',
+    '...kwnwnwnwnk...',
+    '...kNNNNNNNNk...',
+    '....kBk..kBk....',
+  ],
+  notebook: [
+    '..kkkkkkk.',
+    '.kBbbbbbbk',
+    '.kBbiiiibk',
+    '.kBbiiiibk',
+    '.kBbbbbbbk',
+    '.kBbbbbbbk',
+    '.kBbbbbbbk',
+    '.kBbbbbbbk',
+    '.kBbbbbbbk',
+    '..kkkkkkk.',
   ],
   apple: [
     '...kG...',
@@ -352,6 +403,55 @@ function lighthouse(scene: Phaser.Scene): void {
   g.destroy();
 }
 
+// 沖に泊まっている船
+function ship(scene: Phaser.Scene): void {
+  const g = scene.add.graphics();
+  g.fillStyle(0x6b4524);
+  g.fillRect(26, 2, 3, 26);
+  g.fillStyle(0x2b1d14);
+  g.fillTriangle(30, 3, 30, 25, 49, 25);
+  g.fillStyle(0xfbf6e6);
+  g.fillTriangle(31, 6, 31, 24, 46, 24);
+  g.fillStyle(0x2b1d14);
+  g.fillRect(4, 26, 48, 12);
+  g.fillTriangle(0, 26, 4, 26, 4, 38);
+  g.fillTriangle(52, 26, 56, 26, 52, 38);
+  g.fillStyle(0x7a4f2c);
+  g.fillRect(5, 27, 46, 10);
+  g.fillStyle(0xd8432f);
+  g.fillRect(5, 27, 46, 2);
+  g.generateTexture('ship', 56, 40);
+  g.destroy();
+}
+
+// 桟橋につないである、船まで行き来するこぶね
+function ferry(scene: Phaser.Scene): void {
+  const g = scene.add.graphics();
+  g.fillStyle(0x2b1d14);
+  g.fillRect(2, 2, 20, 8);
+  g.fillTriangle(0, 2, 2, 2, 2, 8);
+  g.fillTriangle(22, 2, 24, 2, 22, 8);
+  g.fillStyle(0x9a6a3c);
+  g.fillRect(3, 3, 18, 6);
+  g.fillStyle(0x6b4524);
+  g.fillRect(4, 3, 16, 2);
+  g.generateTexture('ferry', 24, 11);
+  g.destroy();
+}
+
+// 桟橋と船の甲板の板
+function pier(scene: Phaser.Scene): void {
+  const g = scene.add.graphics();
+  g.fillStyle(0x9a6a3c);
+  g.fillRect(0, 0, 16, 16);
+  g.fillStyle(0x6b4524);
+  [3, 7, 11, 15].forEach((y) => {
+    g.fillRect(0, y, 16, 1);
+  });
+  g.generateTexture('pier', 16, 16);
+  g.destroy();
+}
+
 function signpost(scene: Phaser.Scene): void {
   const g = scene.add.graphics();
   g.fillStyle(0x6b4524);
@@ -381,5 +481,8 @@ export function makeTextures(scene: Phaser.Scene): void {
   house(scene, 'fisherHouse', 44, 44, 0xb5523b);
   house(scene, 'shop', 52, 46, 0x4f9a3a);
   lighthouse(scene);
+  ship(scene);
+  ferry(scene);
+  pier(scene);
   signpost(scene);
 }

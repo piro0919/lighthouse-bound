@@ -8,6 +8,12 @@
   --text-letter: 1.375rem;
   --text-letter--line-height: 2;
   --spacing-letter: 34rem;
+  --spacing-item: 2rem;
+  --spacing-slot: 2.75rem;
+  --spacing-slot-small: 1.25rem;
+  --spacing-notebook: 2.5rem;
+  --color-crate: #9a6a3c;
+  --color-crate-hole: #5a3a1e;
 }
 
 html,

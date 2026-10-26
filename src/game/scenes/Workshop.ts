@@ -1,6 +1,7 @@
 import Phaser from 'phaser';
 import { drawBasket, drawCrate } from '../art/containers';
 import { emit } from '../bus';
+import { lessonDue } from '../state';
 import { getState, subscribe } from '../store';
 import { fillTiles, fitCamera, onLeave, OUTER_MARGIN, STAGE, tappable, TILE } from '../view';
 
@@ -14,6 +15,7 @@ const CRATE_AT = { x: 116, y: 84 };
 const BASKET_AT = { x: 136, y: 128 };
 const DOOR_AT = { x: 152, y: 28 };
 const HERO_AT = { x: 88, y: 132 };
+const GRANDMA_AT = { x: 60, y: 128 };
 
 // 工房の中。机の手紙を読み、箱とかごに詰め、戸口から町へ出る
 export class Workshop extends Phaser.Scene {
@@ -35,6 +37,7 @@ export class Workshop extends Phaser.Scene {
       this.scene.start('Town', { from: 'workshop' }),
     );
     this.add.image(HERO_AT.x, HERO_AT.y, 'hero').setOrigin(0);
+    this.add.image(GRANDMA_AT.x, GRANDMA_AT.y, 'grandma').setOrigin(0);
 
     let drawn: Phaser.GameObjects.GameObject[] = [];
     const drawContainers = () => {
@@ -61,6 +64,12 @@ export class Workshop extends Phaser.Scene {
     onLeave(this, unsubscribe);
 
     fitCamera(this);
+
+    // こぶねを出したあとに戻ってくると、おばあちゃんが とおの あいかた を見せる（4の場面）
+    if (lessonDue(getState())) {
+      this.scene.launch('Lesson');
+      this.scene.bringToTop('Hud');
+    }
   }
 
   private openPacking(target: 'crate' | 'basket'): void {

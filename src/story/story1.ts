@@ -27,4 +27,36 @@ export const lines = {
   merchantShort: 'おさらが あいて いますね。',
   merchantLeftover: 'あまった ぶんは おかえしします。',
   merchantThanks: 'たしかに。ありがとうございました。',
+  // 3の場面。船乗りは漁師の子の父親で、箱は2の場面で漁師の子に届けたもの
+  sailorShared: 'おうい、トウカ。なかまと わけたら、ふねの はこの りんごが ななつに なったんだ。',
+  sailorWants: 'うみに でる まえに、はこを とおに したい。',
+  sailorFerry: 'こぶねが でるのは いちど だけ。りんごを かごで とどけて おくれ。',
+  sailorCrate: 'はこは ふねに あるよ。りんごは かごで たのむよ。',
+  sailorNotApples: 'りんごを かごに いれて きて おくれ。',
+  sailorThanks: 'ぴったり とおだ！ ありがとう。',
+  sailorOver: 'おっと、はこに はいりきらないよ。',
+  sailorShort: 'おや、まだ すきまが あるなあ。',
+  sailorReturn: 'ちょうど とおに なる ぶんを、また あした たのむよ。',
+  // 4の場面。こぶねが うまくいかなかったとき
+  grandmaWelcome: 'おかえり。りんごが ぴったりに ならなかったんだね。',
+  grandmaTogether: 'おばあちゃんと いっしょに みて みよう。',
+  // 4の場面。1回で うまくいったとき
+  grandmaWelcomeDone: 'おかえり。ぴったり とおに できたんだね。',
+  grandmaAsk: 'どうして わかったの？ おばあちゃんに みせて おくれ。',
+  grandmaFillSeven: 'はこに りんごを ななつ いれるよ。',
+  grandmaLook: 'あいて いる ところに、りんごを いれて ごらん。',
+  grandmaSevenThree: 'ななつと みっつで、とお。',
+  grandmaFillFour: 'こんどは よっつ。',
+  grandmaFourSix: 'よっつと むっつで、とお。',
+  grandmaFillEight: 'こんどは やっつ。',
+  grandmaEightTwo: 'やっつと ふたつで、とお。',
+  grandmaSeeEmpty: 'あいて いる ところを みれば、あと いくつで とおに なるか わかるね。',
+  grandmaSaw: 'そうか。あいて いる ところを みたんだね。',
+  grandmaName: 'これを、とおの あいかた と よぼう。かいて おこうね。',
+  grandmaTomorrow: 'あしたは きっと だいじょうぶ。',
+} as const;
+
+// 道具の手帳のページの名前
+export const pageTitles = {
+  pairs: 'とおの あいかた',
 } as const;

@@ -1,7 +1,14 @@
 import Phaser from 'phaser';
 import { BASKET_WIDTH, CRATE_HEIGHT, CRATE_WIDTH, drawBasket, drawCrate } from '../art/containers';
-import { emit } from '../bus';
-import { deliverToFisher, merchantAccepts } from '../state';
+import { emit, sayAll } from '../bus';
+import {
+  CRATE_SLOTS,
+  deliverToFisher,
+  merchantAccepts,
+  SAILOR_HAS,
+  sailorAccepts,
+  sailorWaiting,
+} from '../state';
 import { getState, setState } from '../store';
 import { lines } from '@/story/story1';
 import { fillTiles, fitCamera, OUTER_MARGIN, tappable, TILE } from '../view';
@@ -33,11 +40,18 @@ const MERCHANT_AT = { x: 326, y: 100 };
 const ORCHARD_SIGN = { x: 6, y: 140 };
 const BEACH_SIGN = { x: 140, y: 248 };
 const LIGHTHOUSE_AT = { x: 440, y: 308 };
+// 桟橋は砂浜から海へ延びる。こぶねはその横につなぎ、船は沖に泊まる
+const PIER_TILES = 6;
+const PIER = { x: 360, width: TILE, length: TILE * PIER_TILES };
+const FERRY_AT = { x: 378, y: 300 };
+const SHIP_AT = { x: 260, y: 318 };
+const SAILOR_AT = { x: 378, y: 262 };
 const ENTRANCES = {
   workshop: BUILDINGS.workshop.door,
   orchard: { x: 20, y: 164 },
   beach: { x: 148, y: 260 },
   merchant: BUILDINGS.merchant.door,
+  pier: { x: PIER.x + PIER.width / 2, y: WATER_Y - HERO_HALF },
 } as const;
 
 type From = keyof typeof ENTRANCES;
@@ -94,6 +108,13 @@ export class Town extends Phaser.Scene {
       });
 
     this.add.image(LIGHTHOUSE_AT.x, LIGHTHOUSE_AT.y, 'lighthouse').setOrigin(0);
+    fillTiles(this, 'pier', PIER.x, SAND_Y, PIER.width, PIER.length);
+    this.add.image(SHIP_AT.x, SHIP_AT.y, 'ship').setOrigin(0);
+    const visitPier = () => this.walkTo(ENTRANCES.pier.x, ENTRANCES.pier.y, () => this.atPier());
+    tappable(this.add.image(FERRY_AT.x, FERRY_AT.y, 'ferry').setOrigin(0), visitPier);
+    if (sailorWaiting(getState())) {
+      tappable(this.add.image(SAILOR_AT.x, SAILOR_AT.y, 'sailor').setOrigin(0), visitPier);
+    }
     tappable(
       this.add.image(BUILDINGS.workshop.x, BUILDINGS.workshop.y, 'workshop').setOrigin(0),
       () =>
@@ -205,6 +226,33 @@ export class Town extends Phaser.Scene {
       }
       emit('say', { text: lines.merchantPlates, onClose: () => this.scene.start('Plates') });
     });
+  }
+
+  // 桟橋では、船乗りが船の箱のりんごの数を言う。数は言葉で言い、りんごの絵を添える
+  private atPier(): void {
+    if (!sailorWaiting(getState())) return;
+    this.busy = true;
+    sayAll(
+      [
+        { text: lines.sailorShared, picture: { item: 'apple', count: SAILOR_HAS } },
+        { text: lines.sailorWants, picture: { item: 'apple', count: CRATE_SLOTS } },
+        lines.sailorFerry,
+      ],
+      () => {
+        this.busy = false;
+        this.choose((target) => {
+          if (target === 'crate') {
+            emit('say', { text: lines.sailorCrate });
+            return;
+          }
+          if (!sailorAccepts(getState().basket)) {
+            emit('say', { text: lines.sailorNotApples });
+            return;
+          }
+          this.scene.start('Ferry');
+        });
+      },
+    );
   }
 
   // 戸口で、箱とかごのどちらを渡すかを選ぶ。外を触るとやめる

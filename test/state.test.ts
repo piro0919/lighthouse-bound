@@ -3,13 +3,21 @@ import {
   BAG_LIMIT,
   bagToBasket,
   bagToCrate,
+  CRATE_SLOTS,
   crateToBag,
   deliverToFisher,
   initialState,
   judgeFisher,
+  judgeSailor,
+  lessonDue,
   merchantAccepts,
   pick,
+  SAILOR_HAS,
+  sailorAccepts,
+  sailorWaiting,
+  sendFerry,
   settlePlates,
+  writePage,
   type Item,
   type State,
 } from '@/game/state';
@@ -81,5 +89,57 @@ describe('merchant', () => {
     expect(next.basket).toHaveLength(2);
     expect(next.delivered.merchant).toBe(true);
     expect(settlePlates(basketOf(Array<Item>(5).fill('mandarin')), 5).result).toBe('thanks');
+  });
+});
+
+describe('sailor', () => {
+  const ready = (apples: number): State => {
+    const state = Array.from({ length: apples }).reduce<State>(
+      (next) => bagToBasket(next, 0),
+      withBag(Array<Item>(apples).fill('apple')),
+    );
+    return { ...state, delivered: { fisher: true, merchant: true, sailor: false } };
+  };
+
+  it('waits at the pier only after both letters are delivered', () => {
+    expect(sailorWaiting(initialState())).toBe(false);
+    expect(sailorWaiting(ready(0))).toBe(true);
+  });
+
+  it('accepts only a basket of apples', () => {
+    expect(sailorAccepts([])).toBe(false);
+    expect(sailorAccepts(['apple', 'mandarin'])).toBe(false);
+    expect(sailorAccepts(['apple'])).toBe(true);
+  });
+
+  it('takes the apples only when they fill the box exactly', () => {
+    expect(judgeSailor(CRATE_SLOTS - SAILOR_HAS)).toBe('thanks');
+    expect(judgeSailor(CRATE_SLOTS - SAILOR_HAS + 1)).toBe('over');
+    expect(judgeSailor(CRATE_SLOTS - SAILOR_HAS - 1)).toBe('short');
+  });
+
+  it('returns every apple on a miss and counts the trip', () => {
+    const { state, result } = sendFerry(ready(5));
+    expect(result).toBe('over');
+    expect(state.basket).toHaveLength(5);
+    expect(state.ferryTrips).toBe(1);
+    expect(state.delivered.sailor).toBe(false);
+    expect(lessonDue(state)).toBe(true);
+  });
+
+  it('keeps the apples when the box is filled', () => {
+    const { state, result } = sendFerry(ready(CRATE_SLOTS - SAILOR_HAS));
+    expect(result).toBe('thanks');
+    expect(state.basket).toHaveLength(0);
+    expect(state.delivered.sailor).toBe(true);
+    expect(sailorWaiting(state)).toBe(false);
+    expect(lessonDue(state)).toBe(true);
+  });
+
+  it('stops asking for the lesson once the page is written', () => {
+    const { state } = sendFerry(ready(1));
+    const written = writePage(state, 'pairs');
+    expect(lessonDue(written)).toBe(false);
+    expect(writePage(written, 'pairs').pages).toEqual(['pairs']);
   });
 });

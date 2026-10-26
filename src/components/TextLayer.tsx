@@ -1,11 +1,21 @@
 'use client';
 
 import { useCallback, useEffect, useState } from 'react';
-import { on } from '@/game/bus';
+import { on, type Picture, type Say } from '@/game/bus';
 import { speak } from '@/lib/speak';
 import { letters, type LetterId } from '@/story/story1';
+import { Sprite } from './Sprite';
 
-type Say = { text: string; onClose?: () => void };
+// 台詞で言った数を、同じ数の絵で並べる。箱の形には並べず、ばらばらに置く
+function PictureRow({ picture }: { picture: Picture }) {
+  return (
+    <span className="mt-2 flex flex-wrap gap-1">
+      {Array.from({ length: picture.count }, (_, n) => (
+        <Sprite key={n} name={picture.item} className="size-item" />
+      ))}
+    </span>
+  );
+}
 
 // 手紙と台詞は、ドットの文字にせず読みやすい文字で出す。どの文も触ると読み上げる。外を触ると閉じる
 export function TextLayer() {
@@ -72,6 +82,7 @@ export function TextLayer() {
           }}
         >
           {say.text}
+          {say.picture && <PictureRow picture={say.picture} />}
         </button>
       )}
     </div>

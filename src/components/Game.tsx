@@ -1,6 +1,8 @@
 'use client';
 
 import { useEffect, useRef } from 'react';
+import { getState, setState } from '@/game/store';
+import { Notebook } from './Notebook';
 import { TextLayer } from './TextLayer';
 
 // Phaser はブラウザでしか動かないので、画面に出てから読み込む
@@ -14,8 +16,10 @@ export function Game() {
       if (cancelled || !parent.current) return;
       const started = startGame(parent.current);
       game = started;
-      // 開発中だけ、確認のスクリプトから場面を読めるようにする
-      if (process.env.NODE_ENV === 'development') Object.assign(window, { __game: started });
+      // 開発中だけ、確認のスクリプトから場面と状態を読めるようにする
+      if (process.env.NODE_ENV === 'development') {
+        Object.assign(window, { __game: started, __store: { getState, setState } });
+      }
     });
     return () => {
       cancelled = true;
@@ -26,6 +30,7 @@ export function Game() {
   return (
     <>
       <div ref={parent} className="fixed inset-0" />
+      <Notebook />
       <TextLayer />
     </>
   );

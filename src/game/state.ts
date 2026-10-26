@@ -6,12 +6,22 @@ export const CRATE_SLOTS = 10;
 export const BAG_LIMIT = 20;
 export const BASKET_LIMIT = 10;
 export const MERCHANT_PLATES = 5;
+// 船乗りが船の箱に入れてあるりんごの数
+export const SAILOR_HAS = 7;
+// 4の場面でおばあちゃんが箱に入れる数。手帳の とおの あいかた のページにも同じ箱を描く
+export const LESSON_FILLS = [{ filled: SAILOR_HAS }, { filled: 4 }, { filled: 8 }] as const;
+
+// 道具の手帳のページ。とおの あいかた が最初の1枚
+export type Page = 'pairs';
 
 export type State = {
   bag: Item[];
   crate: (Item | null)[];
   basket: Item[];
-  delivered: { fisher: boolean; merchant: boolean };
+  delivered: { fisher: boolean; merchant: boolean; sailor: boolean };
+  // こぶねを出した回数。1回目のあとに、おばあちゃんが とおの あいかた を見せる
+  ferryTrips: number;
+  pages: Page[];
 };
 
 export function initialState(): State {
@@ -19,7 +29,9 @@ export function initialState(): State {
     bag: [],
     crate: Array<Item | null>(CRATE_SLOTS).fill(null),
     basket: [],
-    delivered: { fisher: false, merchant: false },
+    delivered: { fisher: false, merchant: false, sailor: false },
+    ferryTrips: 0,
+    pages: [],
   };
 }
 
@@ -102,4 +114,49 @@ export function settlePlates(state: State, placed: number): { state: State; resu
   const basket = state.basket.slice(MERCHANT_PLATES);
   const next = { ...state, basket, delivered: { ...state.delivered, merchant: true } };
   return { state: next, result: basket.length > 0 ? 'leftover' : 'thanks' };
+}
+
+// 船乗りは、手紙の2つの届け物が済んでから桟橋で待つ
+export function sailorWaiting(state: State): boolean {
+  return state.delivered.fisher && state.delivered.merchant && !state.delivered.sailor;
+}
+
+// こぶねに載せるのは、りんごだけが入ったかご。違うものなら出す前に断るので、1回に数えない
+export function sailorAccepts(basket: readonly Item[]): boolean {
+  return basket.length > 0 && basket.every((item) => item === 'apple');
+}
+
+export type SailorResult = 'over' | 'short' | 'thanks';
+
+export function judgeSailor(carried: number): SailorResult {
+  const total = SAILOR_HAS + carried;
+  if (total > CRATE_SLOTS) return 'over';
+  if (total < CRATE_SLOTS) return 'short';
+  return 'thanks';
+}
+
+// こぶねが出るのは1日に1回。ちょうど埋まれば受け取り、そうでなければ全部かごに戻ってくる
+export function sendFerry(state: State): { state: State; result: SailorResult } {
+  const result = judgeSailor(state.basket.length);
+  const ferryTrips = state.ferryTrips + 1;
+  if (result !== 'thanks') return { state: { ...state, ferryTrips }, result };
+  return {
+    state: {
+      ...state,
+      ferryTrips,
+      basket: [],
+      delivered: { ...state.delivered, sailor: true },
+    },
+    result,
+  };
+}
+
+// こぶねを1回出したら、うまくいってもいかなくても、おばあちゃんと とおの あいかた を書く
+export function lessonDue(state: State): boolean {
+  return state.ferryTrips > 0 && !state.pages.includes('pairs');
+}
+
+export function writePage(state: State, page: Page): State {
+  if (state.pages.includes(page)) return state;
+  return { ...state, pages: [...state.pages, page] };
 }

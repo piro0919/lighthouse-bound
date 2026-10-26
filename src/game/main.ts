@@ -1,7 +1,9 @@
 import Phaser from 'phaser';
 import { Beach, Orchard } from './scenes/Gathering';
 import { Boot } from './scenes/Boot';
+import { Ferry } from './scenes/Ferry';
 import { Hud } from './scenes/Hud';
+import { Lesson } from './scenes/Lesson';
 import { Packing } from './scenes/Packing';
 import { Plates } from './scenes/Plates';
 import { Town } from './scenes/Town';
@@ -14,6 +16,6 @@ export function startGame(parent: HTMLElement): Phaser.Game {
     pixelArt: true,
     backgroundColor: '#2b1d14',
     scale: { mode: Phaser.Scale.RESIZE, width: '100%', height: '100%' },
-    scene: [Boot, Workshop, Town, Orchard, Beach, Packing, Plates, Hud],
+    scene: [Boot, Workshop, Town, Orchard, Beach, Packing, Plates, Ferry, Lesson, Hud],
   });
 }

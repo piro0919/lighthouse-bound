@@ -101,8 +101,9 @@ Claude's calls, delegated by the owner on 2026-10-26 ("no preference").
 ## Code
 
 - `pnpm dev`, `pnpm lint`, `pnpm typecheck`, `pnpm test`, `pnpm build`. lefthook runs eslint, prettier and the typecheck on commit and the tests on push
-- `src/game/` is the Phaser side: `main.ts` (config), `scenes/` (Boot, Workshop, Town, Orchard and Beach in `Gathering.ts`, Packing, Plates, Hud), `state.ts` (pure rules for bag, crate, basket and deliveries), `store.ts` (the one shared state), `bus.ts` (Phaser asks React to show a letter or a line)
-- `src/components/` is the React side: `Game.tsx` loads Phaser in the browser, `TextLayer.tsx` shows letters and lines in a normal font, read aloud on tap (`src/lib/speak.ts`, the browser's speech for now)
+- `src/game/` is the Phaser side: `main.ts` (config), `scenes/` (Boot, Workshop, Town, Orchard and Beach in `Gathering.ts`, Packing, Plates, Ferry, Lesson, Hud), `state.ts` (pure rules for bag, crate, basket, deliveries, the ferry and notebook pages), `store.ts` (the one shared state), `bus.ts` (Phaser asks React to show a letter, a line or the notebook)
+- `src/components/` is the React side: `Game.tsx` loads Phaser in the browser, `TextLayer.tsx` shows letters and lines in a normal font, read aloud on tap (`src/lib/speak.ts`, the browser's speech for now), `Notebook.tsx` is the tools' notebook. React draws the same pixel art through `src/game/art/images.ts` (Boot turns the textures into image URLs) and `Sprite.tsx`
+- In development, `window.__game` and `window.__store` let check scripts read the scenes and the state
 - `src/story/story1.ts` holds all story 1 text
 - Art is placeholder pixel art drawn in code (`src/game/art/sprites.ts`) until real art is made; real art needs the owner's sign-off on two or three samples first
 - The phaserjs template's `log.js` was not taken: it pings an outside server on every dev and build run
@@ -156,6 +157,12 @@ Agreed with the owner on 2026-10-26 in this repository's window. Built on the gr
     - On delivery the box on the boat is shown for the first time as the two-rows-of-five crate: the carried apples drop into the slots one by one. Extras roll back into the basket, missing ones leave empty slots. The failure itself shows the shape of the answer
     - A miss ends the day. Back at the workshop the grandmother fills seven slots of the same crate and has the player look at the empty ones, then other fillings; the notebook page とおの あいかた is written as pictures of the crate, no symbols. The next day the delivery succeeds
     - A player who gets it right the first time still gets the page: the grandmother asks how they knew and writes it down
+  - Steps 3 and 4 as built (Claude's calls, 2026-10-26):
+    - The sailor waits at the pier once both step 1–2 deliveries are done. The box on the ship is the crate delivered in step 2: he says he shared apples with his crewmates and seven are left, so the numbers stay traceable. His seven and ten are each shown with that many apples, loose, not in the crate shape
+    - He says out loud that the ferry goes only once. Handing over the crate, or a basket with anything but apples, gets a line and does not use up the trip
+    - He takes the apples only when they fill the box exactly. On a miss the shape is shown (extras bounce back, or slots stay empty), then every carried apple comes back to the basket, he asks for "just the amount that makes ten" tomorrow, and the day ends. The box stays at seven
+    - The grandmother is in the workshop from the start. After the first ferry trip, entering the workshop starts step 4: she fills seven, then four, then eight; the player taps the empty slots each time, and she says the pair in words (ななつと みっつで、とお)
+    - The notebook page shows those three crates and one empty crate the player can fill. The notebook hangs at the top right as soon as it has a page
   - Step 5 in play:
     - Same wall as step 3 in a different look: one try, and what is already there cannot be seen
     - The ferry: a letter from the ferryman says four are already aboard and ten fit in all. The ferry has not arrived yet; the player hands boarding tags to people waiting at the gate
