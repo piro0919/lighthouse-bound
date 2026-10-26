@@ -111,7 +111,12 @@ Agreed with the owner on 2026-10-26 in this repository's window. Built on the gr
   - Story 1 gives no proper names. People are called by role (おばあちゃん, the fisher's child, the sailor), which also keeps the text free of kanji
   - One thread ties the steps: the first letter (step 1) is from the fisher's child, whose father is the sailor of step 3 and is about to go to sea; the apples are for his voyage. In step 7 the hero rereads that letter, notices the child's worry, and sees the ship off with the child as the lighthouse is lit
   - Title: とおの はこ
-  - Steps 3 and 4 in play:
+  - Steps 1 and 2 in play:
+    - Grade 1 kids are still learning hiragana at the start of the year, so every line of text is read aloud when tapped. How it is voiced (recorded or the browser's speech) is a tech-stack question
+    - Two letters lie on the workshop desk. The fisher's child: a crate full of apples for the father who is going to sea. The merchant, in です・ます: five mandarins in a basket. The player keeps apart who wants what (same and different, a grade 1 item)
+    - Reading is checked by doing, never by a quiz: the player chooses where to gather (orchard or beach), what to put in what, and whose door to go to. A wrong item gets a gentle "that's not it" from the recipient and the letter can be reread; no marks, and steps 1–2 allow any number of tries (the one-try wall starts at step 3)
+    - The apples go into the crate slot by slot; the crate is done when every slot is filled, so ten is "full" before it is a number
+    - The merchant lays out five plates and the player puts one mandarin on each: matching one to one, before counting
     - The wall is one delivery, not a timer: the ship is anchored offshore and the ferry goes out once. Without it, bringing one apple at a time and hearing "not enough" would get through and the tool would not be needed
     - At the pier the sailor calls out that he put なな in the box and wants とお. Numbers are said in words and drawn as apples
     - In the orchard the player taps apples into a basket and can take them out again; the basket always shows what is in it
