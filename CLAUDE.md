@@ -96,6 +96,7 @@ Claude's calls, delegated by the owner on 2026-10-26 ("no preference").
 - **Next.js** around it, from the official `phaserjs/template-nextjs` (its package.json pins phaser 4.0.0, next 15.3.1, react 19.0.0; bump them). Next.js is what the owner's other repositories use, and the letters and other text screens are drawn as React over the canvas in a normal readable font
 - pnpm, Vercel. If server functions are ever added, put them in sin1 (global rule)
 - Still open: how lines are read aloud (recorded voice or the browser's speech), how the usage record is kept, how progress is saved
+
 ## First release
 
 - Story 1: grade 1 Japanese and arithmetic. Story 1 is basically a prologue
