@@ -77,7 +77,10 @@ Nothing is built yet. Everything below, except the Undecided section, was agreed
 
 ## Look
 
-- Atelier-like art
+- **Pixel art**, with **Stardew Valley** as the reference for the look (owner's pick, 2026-10-26; it replaces the earlier "Atelier-like art"). The Atelier series stays the model for the game's structure, not its art
+  - Other references shown and not picked: Unpacking, Coffee Talk, Potion Permit
+- Text is set in a normal readable font, not a pixel font: grade 1 kids are still learning hiragana (Claude's view, not yet confirmed by the owner)
+- Faces are hard to read in small sprites; conversation scenes may need larger pixel portraits (Claude's idea, not decided)
 - The hero needs art for each age; this is where the art workload grows most
 
 ## Platform
