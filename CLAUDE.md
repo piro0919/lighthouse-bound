@@ -112,6 +112,7 @@ Claude's calls, delegated by the owner on 2026-10-26 ("no preference").
 
 - Every scene fits a 192 px square into the short side of the screen at an integer zoom (`src/game/view.ts`), so pixels stay sharp on phones (zoom 2 at 390 px wide) and Chromebooks (zoom 4 at 1366×768)
 - Small things get a wider touch area than their picture (`tappable` in `view.ts`); bag icons are drawn at double size
+- The bag bar sits over the bottom of the screen; on landscape screens that is the bottom of the stage. Keep anything tappable above the bottom 48 px of the 192 px stage
 - Story text is kana only in story 1, and no digits or math symbols in any text. `test/text-rules.test.ts` enforces both
 - No × anywhere: in Japan it reads as the "wrong" mark. Overlays close by tapping outside them, or Esc
 - Lines in letters break only at the spaces between words (`break-keep`)

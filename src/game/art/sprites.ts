@@ -1,6 +1,15 @@
 // 仮のドット絵。本番の絵ができるまで、動きを確かめるためにコードで描いている。
 // トウカの見た目は CLAUDE.md の Story 1（栗色の髪、琥珀の目、ランタンの髪留め、紺の服に大きすぎるエプロン）に合わせた
 import type Phaser from 'phaser';
+import {
+  CRATE_COLS,
+  CRATE_HEIGHT,
+  CRATE_ROWS,
+  CRATE_WIDTH,
+  SLOT_EDGE,
+  SLOT_HOLE,
+  SLOT_PITCH,
+} from './containers';
 
 const palette: Record<string, number> = {
   k: 0x2b1d14,
@@ -234,15 +243,17 @@ function wall(scene: Phaser.Scene): void {
 // 5つずつ2列の仕切り箱。仕切りの穴は 8×8 で、間隔は 10
 function crate(scene: Phaser.Scene): void {
   const g = scene.add.graphics();
-  const w = 2 + 5 * 10;
-  const h = 2 + 2 * 10;
+  const w = CRATE_WIDTH;
+  const h = CRATE_HEIGHT;
   g.fillStyle(0x2b1d14);
   g.fillRect(0, 0, w, h);
   g.fillStyle(0x9a6a3c);
   g.fillRect(1, 1, w - 2, h - 2);
   g.fillStyle(0x5a3a1e);
-  for (let row = 0; row < 2; row += 1) {
-    for (let col = 0; col < 5; col += 1) g.fillRect(2 + col * 10, 2 + row * 10, 8, 8);
+  for (let row = 0; row < CRATE_ROWS; row += 1) {
+    for (let col = 0; col < CRATE_COLS; col += 1) {
+      g.fillRect(SLOT_EDGE + col * SLOT_PITCH, SLOT_EDGE + row * SLOT_PITCH, SLOT_HOLE, SLOT_HOLE);
+    }
   }
   g.generateTexture('crate', w, h);
   g.destroy();

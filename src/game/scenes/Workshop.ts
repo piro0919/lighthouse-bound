@@ -2,7 +2,7 @@ import Phaser from 'phaser';
 import { drawBasket, drawCrate } from '../art/containers';
 import { emit } from '../bus';
 import { getState, subscribe } from '../store';
-import { fillTiles, fitCamera, OUTER_MARGIN, STAGE, tappable, TILE } from '../view';
+import { fillTiles, fitCamera, onLeave, OUTER_MARGIN, STAGE, tappable, TILE } from '../view';
 
 const WALL_ROWS = 3;
 const DESK = { x: 28, y: 76 };
@@ -58,7 +58,7 @@ export class Workshop extends Phaser.Scene {
     };
     drawContainers();
     const unsubscribe = subscribe(drawContainers);
-    this.events.once('shutdown', unsubscribe);
+    onLeave(this, unsubscribe);
 
     fitCamera(this);
   }

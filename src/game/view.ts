@@ -9,23 +9,34 @@ export function fitZoom(width: number, height: number): number {
   return Math.max(1, Math.floor(Math.min(width, height) / STAGE));
 }
 
-// 画面の大きさが変わるたびに拡大し直し、場面の中心を画面の中心に合わせる
+// 場面を離れるときの後始末。場面を替えたとき（shutdown）だけでなく、ゲームごと壊したとき（destroy）にも1回だけ走らせる
+export function onLeave(scene: Phaser.Scene, cleanup: () => void): void {
+  let done = false;
+  const run = () => {
+    if (done) return;
+    done = true;
+    cleanup();
+  };
+  scene.events.once('shutdown', run);
+  scene.events.once('destroy', run);
+}
+
+// 画面の大きさが変わるたびに拡大し直す。center を渡すと、その点を画面の中心に合わせる（町はトウカを追うので渡さない）
 export function fitCamera(
   scene: Phaser.Scene,
-  centerX = STAGE_CENTER,
-  centerY = STAGE_CENTER,
+  center: { x: number; y: number } | null = { x: STAGE_CENTER, y: STAGE_CENTER },
 ): void {
   const apply = () => {
     const camera = scene.cameras.main;
     camera.setZoom(fitZoom(scene.scale.width, scene.scale.height));
-    camera.centerOn(centerX, centerY);
+    if (center) camera.centerOn(center.x, center.y);
   };
   apply();
   scene.scale.on('resize', apply);
-  scene.events.once('shutdown', () => scene.scale.off('resize', apply));
+  onLeave(scene, () => scene.scale.off('resize', apply));
 }
 
-// 床や草のように、画面の外まで同じ模様を敷く。広い画面でも端が切れないよう、場面の外側にも余分に敷く
+// 床や草のように、同じ模様を敷き詰める
 export function fillTiles(
   scene: Phaser.Scene,
   key: string,

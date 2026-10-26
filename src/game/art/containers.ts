@@ -3,8 +3,14 @@ import type { Item } from '../state';
 
 // 仕切り箱の穴の位置。絵（sprites.ts の crate）と同じく、縁が 2、間隔が 10
 export const CRATE_COLS = 5;
-const SLOT_EDGE = 2;
-const SLOT_PITCH = 10;
+export const CRATE_ROWS = 2;
+export const SLOT_EDGE = 2;
+export const SLOT_PITCH = 10;
+export const SLOT_HOLE = 8;
+export const CRATE_WIDTH = SLOT_EDGE + CRATE_COLS * SLOT_PITCH;
+export const CRATE_HEIGHT = SLOT_EDGE + CRATE_ROWS * SLOT_PITCH;
+// かごの絵（sprites.ts の basket）の幅
+export const BASKET_WIDTH = 16;
 const BASKET_ITEM_PITCH = 4;
 const BASKET_PER_ROW = 3;
 const BASKET_ROW_PITCH = 5;

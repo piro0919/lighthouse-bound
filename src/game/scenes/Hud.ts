@@ -1,7 +1,7 @@
 import Phaser from 'phaser';
 import { drop, type State } from '../state';
 import { getState, setState, subscribe } from '../store';
-import { fitZoom } from '../view';
+import { fitZoom, onLeave } from '../view';
 
 // 子どもの指で触れる大きさにするため、持ち物の絵は2倍で出す
 const ICON_SCALE = 2;
@@ -33,7 +33,7 @@ export class Hud extends Phaser.Scene {
     const unsubscribe = subscribe((state) => this.draw(state));
     const redraw = () => this.draw(getState());
     this.scale.on('resize', redraw);
-    this.events.once('shutdown', () => {
+    onLeave(this, () => {
       unsubscribe();
       this.scale.off('resize', redraw);
     });

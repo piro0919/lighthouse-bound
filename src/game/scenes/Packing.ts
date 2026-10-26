@@ -1,8 +1,8 @@
 import Phaser from 'phaser';
-import { drawBasket, drawCrate } from '../art/containers';
+import { BASKET_WIDTH, CRATE_WIDTH, drawBasket, drawCrate } from '../art/containers';
 import { bagToBasket, bagToCrate, basketToBag, crateToBag } from '../state';
 import { getState, setState, subscribe } from '../store';
-import { fitCamera, OUTER_MARGIN, STAGE, STAGE_CENTER } from '../view';
+import { fitCamera, onLeave, OUTER_MARGIN, STAGE, STAGE_CENTER } from '../view';
 import { setBagTap } from './Hud';
 
 type Target = 'crate' | 'basket';
@@ -10,8 +10,6 @@ type Target = 'crate' | 'basket';
 const DIM_ALPHA = 0.6;
 // 詰めている間は、箱とかごを大きく出して中身を触りやすくする
 const ZOOM_UP = 2;
-const CRATE_WIDTH = 52;
-const BASKET_WIDTH = 16;
 const CONTENT_Y = 48;
 
 // 箱かごを開いて詰める画面。持ち物（Hud）を触ると中へ入り、中のものを触ると持ち物へ戻る
@@ -60,7 +58,7 @@ export class Packing extends Phaser.Scene {
     );
     this.input.keyboard?.on('keydown-ESC', () => this.close());
 
-    this.events.once('shutdown', () => {
+    onLeave(this, () => {
       unsubscribe();
       setBagTap(null);
     });

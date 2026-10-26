@@ -6,7 +6,8 @@ import { fillTiles, fitCamera, OUTER_MARGIN, STAGE, tappable } from '../view';
 type Spot = { item: Item; x: number; y: number };
 
 const TREE_SCALE = 2;
-const EXIT_AT = { x: 8, y: 166 };
+// 持ち物の欄（Hud）は横長の画面だと場面の下端に重なるので、下から 48 より上に置く（CLAUDE.md の Design rules）
+const EXIT_AT = { x: 8, y: 120 };
 // 帰り道の看板には工房の戸の絵を小さく描く
 const EXIT_ICON = { x: 5, y: 1, scale: 0.5 };
 
@@ -35,18 +36,18 @@ const ORCHARD_TREES = [
 ];
 
 const BEACH_SPOTS: Spot[] = [
-  { item: 'shell', x: 30, y: 60 },
-  { item: 'shell', x: 76, y: 44 },
-  { item: 'shell', x: 120, y: 70 },
-  { item: 'shell', x: 150, y: 40 },
-  { item: 'shell', x: 56, y: 96 },
-  { item: 'shell', x: 140, y: 104 },
-  { item: 'seaweed', x: 20, y: 120 },
-  { item: 'seaweed', x: 64, y: 130 },
-  { item: 'seaweed', x: 100, y: 112 },
-  { item: 'seaweed', x: 160, y: 132 },
-  { item: 'seaweed', x: 110, y: 150 },
-  { item: 'seaweed', x: 40, y: 150 },
+  { item: 'shell', x: 40, y: 36 },
+  { item: 'shell', x: 84, y: 32 },
+  { item: 'shell', x: 128, y: 40 },
+  { item: 'shell', x: 164, y: 30 },
+  { item: 'shell', x: 60, y: 70 },
+  { item: 'shell', x: 150, y: 72 },
+  { item: 'seaweed', x: 24, y: 96 },
+  { item: 'seaweed', x: 70, y: 104 },
+  { item: 'seaweed', x: 108, y: 88 },
+  { item: 'seaweed', x: 160, y: 104 },
+  { item: 'seaweed', x: 120, y: 118 },
+  { item: 'seaweed', x: 44, y: 124 },
 ];
 
 // 採る場所に共通の形。触ったものが持ち物（Hud）に入る。場面に入り直すと、また実っている

@@ -1,10 +1,10 @@
 import Phaser from 'phaser';
-import { drawBasket, drawCrate } from '../art/containers';
+import { BASKET_WIDTH, CRATE_HEIGHT, CRATE_WIDTH, drawBasket, drawCrate } from '../art/containers';
 import { emit } from '../bus';
 import { deliverToFisher, merchantAccepts } from '../state';
 import { getState, setState } from '../store';
 import { lines } from '@/story/story1';
-import { fillTiles, fitZoom, OUTER_MARGIN, tappable, TILE } from '../view';
+import { fillTiles, fitCamera, OUTER_MARGIN, tappable, TILE } from '../view';
 
 // 地図の大きさと、道・砂浜・海の始まる行（マスの数）
 const ROWS = { width: 32, height: 24, path: 10, sand: 15, water: 18 };
@@ -20,9 +20,6 @@ const HERO_HALF = 8;
 const DIM_ALPHA = 0.6;
 const CHOICE_GAP = 24;
 const CHOICE_SCALE = 2;
-const CRATE_WIDTH = 52;
-const CRATE_HEIGHT = 22;
-const BASKET_WIDTH = 16;
 const FEET = { x: 0.5, y: 1 };
 const SIGN_ICON = { x: 5, y: 2 };
 
@@ -50,6 +47,7 @@ export class Town extends Phaser.Scene {
   private hero!: Phaser.GameObjects.Sprite;
   private from: From = 'workshop';
   private busy = false;
+  private stepTimer: Phaser.Time.TimerEvent | null = null;
 
   constructor() {
     super('Town');
@@ -58,6 +56,7 @@ export class Town extends Phaser.Scene {
   init(data: { from?: From }): void {
     this.from = data.from ?? 'workshop';
     this.busy = false;
+    this.stepTimer = null;
   }
 
   create(): void {
@@ -135,10 +134,7 @@ export class Town extends Phaser.Scene {
       MAP_H + OUTER_MARGIN * 2,
     );
     camera.startFollow(this.hero, true);
-    const fit = () => camera.setZoom(fitZoom(this.scale.width, this.scale.height));
-    fit();
-    this.scale.on('resize', fit);
-    this.events.once('shutdown', () => this.scale.off('resize', fit));
+    fitCamera(this, null);
   }
 
   // 看板には、行き先で採れるものの絵を描いておく
@@ -149,7 +145,9 @@ export class Town extends Phaser.Scene {
 
   private walkTo(x: number, y: number, onArrive?: () => void): void {
     if (this.busy) return;
+    // killTweensOf は onStop を呼ばずに歩きを消すので、足踏みの時計はここで止める
     this.tweens.killTweensOf(this.hero);
+    this.stepTimer?.remove();
     const distance = Phaser.Math.Distance.Between(this.hero.x, this.hero.y, x, y);
     let step = 0;
     const timer = this.time.addEvent({
@@ -170,8 +168,8 @@ export class Town extends Phaser.Scene {
         this.hero.setTexture('hero');
         onArrive?.();
       },
-      onStop: () => timer.remove(),
     });
+    this.stepTimer = timer;
   }
 
   private atFisher(): void {
@@ -218,8 +216,10 @@ export class Town extends Phaser.Scene {
     const layer = this.add.container(0, 0);
     const finish = () => {
       layer.destroy();
+      this.input.keyboard?.off('keydown-ESC', finish);
       this.busy = false;
     };
+    this.input.keyboard?.once('keydown-ESC', finish);
     const dim = this.add
       .rectangle(cx - span, cy - span, span * 2, span * 2, 0x000000, DIM_ALPHA)
       .setOrigin(0)

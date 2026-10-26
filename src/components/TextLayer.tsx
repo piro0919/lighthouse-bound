@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { on } from '@/game/bus';
 import { speak } from '@/lib/speak';
 import { letters, type LetterId } from '@/story/story1';
@@ -21,13 +21,13 @@ export function TextLayer() {
     };
   }, []);
 
-  const close = () => {
+  const close = useCallback(() => {
     const onClose = say?.onClose;
     setLetter(null);
     setSay(null);
     window.speechSynthesis?.cancel();
     onClose?.();
-  };
+  }, [say]);
 
   useEffect(() => {
     if (!letter && !say) return;
@@ -36,7 +36,7 @@ export function TextLayer() {
     };
     window.addEventListener('keydown', onKey);
     return () => window.removeEventListener('keydown', onKey);
-  });
+  }, [letter, say, close]);
 
   if (!letter && !say) return null;
 
