@@ -124,6 +124,13 @@ Agreed with the owner on 2026-10-26 in this repository's window. Built on the gr
     - The floats: a fisher's net out at sea already has six floats and needs ten; the player brings floats from the workshop shed in one trip
     - The notebook hangs at the screen's edge at all times and never glows or prompts. Opening it to the とおの あいかた page gives an empty crate the player can fill themselves to see the empty slots; it does not give the answer
     - No hint in words. On the result, the ferry seats and the floats are shown in two rows of five, like the crate, so a miss shows the same shape again. A miss ends the day; retries are unlimited
+  - Step 6 in play:
+    - The merchant of the polite letter in step 1 writes again: he will buy every apple in the storeroom and asks, politely, to be told by letter how many there are
+    - The apples lie in a loose heap. Tapping one lights it only for a moment and nudges the heap, so counting the heap one by one loses track. That is the wall
+    - Empty crates stand in the storeroom, not pointed at. Packing apples into crates takes them off the heap, so what is counted stays counted
+    - The reply is a letter built from word tiles in the polite style: crates and loose apples in number words (e.g. はこが みっつと、ななこ です). No numerals. This is also grade 1 letter writing
+    - The letter goes once. The merchant comes, opens the crates and counts in front of the player; a miss shows the packed crates and the loose ones, and the next day brings a new heap with a different count (two-digit, under 100) so it cannot be memorized
+    - The second tool is found by the player, not taught: after a delivery that used the crates, トウカ writes the page herself in the notebook. Its name is Claude's working pick, とおの まとまり
 - The hero is a girl, fixed; the player does not choose (owner's pick, 2026-10-26). The owner does not like choosing; Claude agreed because a choice doubles the per-age art and the Atelier series has fixed heroes. Whether kids of this age want to choose was not checked
 - The hero's name is **トウカ** (owner's pick, 2026-10-26). From 灯火 (a lamp's flame); it also holds the "tou" of 灯台 and 東大. Other people in story 1 still go by role
 - The hero's look, in words (Claude's call, delegated, 2026-10-26; the owner decides for real once there is art to see):
