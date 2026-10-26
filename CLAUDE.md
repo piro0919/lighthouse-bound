@@ -71,7 +71,7 @@ Nothing is built yet. Everything below, except the Undecided section, was agreed
 
 ## Text
 
-- Each story uses only the kanji taught up to that grade (学年別漢字配当表). Grade 1 is 80 kanji (checked against secondary sources, not the ministry's text)
+- Each story uses only the kanji taught up to that grade (学年別漢字配当表). Grade 1 is 80 kanji (checked 2026-10-26 against the ministry's curriculum guidelines, `https://www.mext.go.jp/content/1413522_001.pdf`, appended table of the Japanese section, printed page 42)
 - Story 1 starts in hiragana
 
 ## Look
