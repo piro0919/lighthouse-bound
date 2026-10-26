@@ -2,10 +2,13 @@ import {
   BAG_LIMIT,
   BASKET_LIMIT,
   CRATE_SLOTS,
+  HEAP_TENS,
+  heapTotal,
+  initialState,
   ITEMS,
+  PAGES,
   STOREROOM_CRATES,
   type Item,
-  type Page,
   type State,
 } from './state';
 
@@ -46,25 +49,40 @@ function isItems(value: unknown, max: number): value is Item[] {
   return Array.isArray(value) && value.length <= max && value.every(isItem);
 }
 
-const PAGES: readonly Page[] = ['pairs', 'tens'];
-const DELIVERIES = ['fisher', 'merchant', 'sailor', 'crossing', 'net', 'tally', 'farewell'];
+// 山は多くても十の位が HEAP_TENS.max で、一の位が9。手で書き換えた大きな数で、絵を作りすぎないようにする
+const HEAP_MAX = HEAP_TENS.max * CRATE_SLOTS + CRATE_SLOTS - 1;
+
+// 項目の名前は initialState と同じでなければならない。State に足して VERSION を上げ忘れても、古い保存は通さない
+function sameKeys(value: Record<string, unknown>, model: object): boolean {
+  const keys = Object.keys(value).sort();
+  const expected = Object.keys(model).sort();
+  return keys.length === expected.length && keys.every((key, n) => key === expected[n]);
+}
 
 function isTally(value: unknown): boolean {
-  return isRecord(value) && isCount(value.crates) && isCount(value.loose);
+  return (
+    isRecord(value) &&
+    sameKeys(value, { crates: 0, loose: 0 }) &&
+    isCount(value.crates, HEAP_TENS.max) &&
+    isCount(value.loose, CRATE_SLOTS - 1)
+  );
 }
 
 function isStoreroom(value: unknown): boolean {
+  if (!isRecord(value) || !sameKeys(value, { loose: 0, crates: [] })) return false;
+  const { loose, crates } = value;
   return (
-    isRecord(value) &&
-    isCount(value.loose) &&
-    Array.isArray(value.crates) &&
-    value.crates.length === STOREROOM_CRATES &&
-    value.crates.every((count) => isCount(count, CRATE_SLOTS))
+    isCount(loose, HEAP_MAX) &&
+    Array.isArray(crates) &&
+    crates.length === STOREROOM_CRATES &&
+    crates.every((count) => isCount(count, CRATE_SLOTS)) &&
+    heapTotal({ loose, crates: crates as number[] }) <= HEAP_MAX
   );
 }
 
 function isState(value: unknown): value is State {
-  if (!isRecord(value)) return false;
+  const model = initialState();
+  if (!isRecord(value) || !sameKeys(value, model)) return false;
   const { bag, crate, basket, delivered, ferryTrips, pages, storeroom, sold } = value;
   return (
     isItems(bag, BAG_LIMIT) &&
@@ -73,10 +91,11 @@ function isState(value: unknown): value is State {
     crate.every((slot) => slot === null || isItem(slot)) &&
     isItems(basket, BASKET_LIMIT) &&
     isRecord(delivered) &&
-    DELIVERIES.every((job) => typeof delivered[job] === 'boolean') &&
+    sameKeys(delivered, model.delivered) &&
+    Object.values(delivered).every((done) => typeof done === 'boolean') &&
     isCount(ferryTrips) &&
     Array.isArray(pages) &&
-    pages.every((page) => PAGES.includes(page as Page)) &&
+    pages.every((page) => (PAGES as readonly unknown[]).includes(page)) &&
     (storeroom === null || isStoreroom(storeroom)) &&
     (sold === null || isTally(sold))
   );

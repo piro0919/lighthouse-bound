@@ -25,7 +25,8 @@ export const HEAP_TENS = { min: 2, max: 5 };
 export type Storeroom = { loose: number; crates: number[] };
 
 // 道具の手帳のページ。とおの あいかた が最初の1枚。とおの まとまり が2枚目
-export type Page = 'pairs' | 'tens';
+export const PAGES = ['pairs', 'tens'] as const;
+export type Page = (typeof PAGES)[number];
 
 export type State = {
   bag: Item[];

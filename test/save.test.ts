@@ -39,8 +39,13 @@ describe('save', () => {
       { ...initialState(), ferryTrips: -1 },
       { ...initialState(), pages: ['pairs', 'map'] },
       { ...initialState(), storeroom: { loose: 3, crates: [11, 0, 0, 0, 0, 0] } },
+      { ...initialState(), storeroom: { loose: 100000000, crates: [0, 0, 0, 0, 0, 0] } },
+      { ...initialState(), storeroom: { loose: 50, crates: [10, 0, 0, 0, 0, 0] } },
       { ...initialState(), sold: { crates: 1 } },
+      { ...initialState(), sold: { crates: 1000000, loose: 0 } },
       { ...initialState(), sold: undefined },
+      { ...initialState(), extra: true },
+      { ...initialState(), delivered: { ...initialState().delivered, later: false } },
     ];
     broken.forEach((state) => {
       expect(decodeSave(JSON.stringify({ version: 1, state }))).toBeNull();
