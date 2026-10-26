@@ -87,6 +87,15 @@ Nothing is built yet. Everything below, except the Undecided section, was agreed
 
 - Web. Phones, tablets and school-issued devices (e.g. Chromebooks) all have to work. Touch first, small screens first
 
+## Tech stack
+
+Claude's calls, delegated by the owner on 2026-10-26 ("no preference").
+
+- **Phaser 4** for the game (latest release v4.2.1, 2026-07-09, checked on GitHub). Its README lists scenes, input, cameras, tilemaps and tweens, which cover a Stardew-like town map with touch. Chosen over PixiJS (renderer only; scenes and maps would be hand-built) and Godot (web export expected to load heavily on phone browsers, not measured)
+- The Phaser repository ships agent skills in `skills/`; read them before writing Phaser code
+- **Next.js** around it, from the official `phaserjs/template-nextjs` (its package.json pins phaser 4.0.0, next 15.3.1, react 19.0.0; bump them). Next.js is what the owner's other repositories use, and the letters and other text screens are drawn as React over the canvas in a normal readable font
+- pnpm, Vercel. If server functions are ever added, put them in sin1 (global rule)
+- Still open: how lines are read aloud (recorded voice or the browser's speech), how the usage record is kept, how progress is saved
 ## First release
 
 - Story 1: grade 1 Japanese and arithmetic. Story 1 is basically a prologue
@@ -160,5 +169,4 @@ Agreed with the owner on 2026-10-26 in this repository's window. Built on the gr
 ## Undecided
 
 - How crafting works. Claude's idea, not accepted: results depend on which materials and how much of each; amounts carry arithmetic (exactly 10 in the pot finishes it), growing into ratio and concentration later
-- Tech stack
 - Who pays, if anyone, later
