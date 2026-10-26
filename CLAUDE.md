@@ -111,6 +111,13 @@ Agreed with the owner on 2026-10-26 in this repository's window. Built on the gr
   - Story 1 gives no proper names. People are called by role (おばあちゃん, the fisher's child, the sailor), which also keeps the text free of kanji
   - One thread ties the steps: the first letter (step 1) is from the fisher's child, whose father is the sailor of step 3 and is about to go to sea; the apples are for his voyage. In step 7 the hero rereads that letter, notices the child's worry, and sees the ship off with the child as the lighthouse is lit
   - Title: とおの はこ
+  - Steps 3 and 4 in play:
+    - The wall is one delivery, not a timer: the ship is anchored offshore and the ferry goes out once. Without it, bringing one apple at a time and hearing "not enough" would get through and the tool would not be needed
+    - At the pier the sailor calls out that he put なな in the box and wants とお. Numbers are said in words and drawn as apples
+    - In the orchard the player taps apples into a basket and can take them out again; the basket always shows what is in it
+    - On delivery the box on the boat is shown for the first time as the two-rows-of-five crate: the carried apples drop into the slots one by one. Extras roll back into the basket, missing ones leave empty slots. The failure itself shows the shape of the answer
+    - A miss ends the day. Back at the workshop the grandmother fills seven slots of the same crate and has the player look at the empty ones, then other fillings; the notebook page とおの あいかた is written as pictures of the crate, no symbols. The next day the delivery succeeds
+    - A player who gets it right the first time still gets the page: the grandmother asks how they knew and writes it down
 - The hero is a girl, fixed; the player does not choose (owner's pick, 2026-10-26). The owner does not like choosing; Claude agreed because a choice doubles the per-age art and the Atelier series has fixed heroes. Whether kids of this age want to choose was not checked
 - The hero's name is **トウカ** (owner's pick, 2026-10-26). From 灯火 (a lamp's flame); it also holds the "tou" of 灯台 and 東大. Other people in story 1 still go by role
 - The hero's look, in words (Claude's call, delegated, 2026-10-26; the owner decides for real once there is art to see):
