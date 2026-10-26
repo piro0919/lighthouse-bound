@@ -104,7 +104,8 @@ Agreed with the owner on 2026-10-26 in this repository's window. Built on the gr
   6. The big load. A large order of apples; counting one by one loses track, packing into boxes of 10 makes "3 boxes and 7 more" countable. Arithmetic: seeing numbers in tens, two-digit numbers, grouping to count
   7. The town changes. The ship leaves, the lighthouse is lit at night; reading the requester's feelings from the words of their letter. Japanese: imagining a character's actions from the scene
 - Left out of story 1: formulas and the symbols + − = (no symbols on screen); shapes, comparing lengths, telling time and picture charts (grade 1 content, moved to story 2 or the workshop's daily life); handwriting posture (cannot be done by touch)
-- Undecided: the tool's in-game name (Claude's candidates, not chosen: とおの あいかた, はこの すきま), the characters' names, the story title
+- The first tool is named **とおの あいかた** (Claude's call, delegated). It names the pair itself (7 and 3, 4 and 6), so it does not tie the tool to boxes and works in step 5; the other candidate, はこの すきま, did
+- Undecided: the characters' names, the story title
 
 ## Name
 
