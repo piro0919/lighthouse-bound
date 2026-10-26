@@ -90,6 +90,22 @@ Nothing is built yet. Everything below, except the Undecided section, was agreed
 - Whether to include story 2 in the first release: decide later (the owner called it negligible)
 - Concern noted: since the game has one core, the prologue has to show the whole loop and be fun, or players leave before later stories exist
 
+## Story 1
+
+Agreed with the owner on 2026-10-26 in this repository's window. Built on the grade 1 items of the national curriculum guidelines (`https://www.mext.go.jp/content/1413522_001.pdf`: Japanese, grades 1–2, printed pages 28–30; arithmetic, grade 1, printed pages 64–66) and the arithmetic commentary (`https://www.mext.go.jp/content/20211102-mxt_kyoiku02-100002607_04.pdf`).
+
+- Why a six-year-old takes requests is not explained. The hero is in the workshop and townspeople come to ask; the mood is enough (owner's word)
+- Skeleton, in this order:
+  1. A letter arrives. Reading a hiragana letter to find what, how many and for whom; a second, polite letter (です・ます) asks the same thing in a different register. Japanese: は/へ/を, subject and predicate, polite vs plain words, following the order of events
+  2. Filling a box. The workshop crate holds 10 in two rows of 5; the hero gathers apples and fills it one by one. The current way still works. Arithmetic: matching one to one, counting
+  3. The closed box. A sailor has 7 on the boat and wants 10; the box cannot be seen, so counting one by one cannot tell how many to bring. Too many come back, too few leave it unfilled, and the numbers stay traceable. Shown as pictures of apples, not numerals
+  4. Getting the tool. The workshop's master shows that when 7 slots are filled, the empty ones are always the same number. The first tool: seeing the pairs that make 10. Arithmetic: seeing a number as the sum or difference of other numbers
+  5. Using it elsewhere. Situations that do not look like a box (a ten-seat ferry with 4 aboard, a net that needs 10 floats with 6 left). The game does not point to the tool; the player brings it out
+  6. The big load. A large order of apples; counting one by one loses track, packing into boxes of 10 makes "3 boxes and 7 more" countable. Arithmetic: seeing numbers in tens, two-digit numbers, grouping to count
+  7. The town changes. The ship leaves, the lighthouse is lit at night; reading the requester's feelings from the words of their letter. Japanese: imagining a character's actions from the scene
+- Left out of story 1: formulas and the symbols + − = (no symbols on screen); shapes, comparing lengths, telling time and picture charts (grade 1 content, moved to story 2 or the workshop's daily life); handwriting posture (cannot be done by touch)
+- Undecided: the tool's in-game name (Claude's candidates, not chosen: とおの あいかた, はこの すきま), the characters' names, the story title
+
 ## Name
 
 - **Lighthouse Bound** (owner's pick, 2026-10-26). 灯台 (lighthouse) and 東大 (the University of Tokyo) are both read "toudai"; "bound" means heading for it. A lighthouse also fits the harbor town
@@ -98,7 +114,6 @@ Nothing is built yet. Everything below, except the Undecided section, was agreed
 ## Undecided
 
 - How crafting works. Claude's idea, not accepted: results depend on which materials and how much of each; amounts carry arithmetic (exactly 10 in the pot finishes it), growing into ratio and concentration later
-- How "composing 10" and grade 1 Japanese appear as requests in story 1 (next topic)
 - Where the tools live in the loop (the hero's abilities, items, companions, …)
 - Tech stack
 - Who pays, if anyone, later
