@@ -112,7 +112,8 @@ Agreed with the owner on 2026-10-26 in this repository's window. Built on the gr
   - One thread ties the steps: the first letter (step 1) is from the fisher's child, whose father is the sailor of step 3 and is about to go to sea; the apples are for his voyage. In step 7 the hero rereads that letter, notices the child's worry, and sees the ship off with the child as the lighthouse is lit
   - Title: とおの はこ
 - The hero is a girl, fixed; the player does not choose (owner's pick, 2026-10-26). The owner does not like choosing; Claude agreed because a choice doubles the per-age art and the Atelier series has fixed heroes. Whether kids of this age want to choose was not checked
-- Undecided: the hero's look and name
+- The hero's name is **トウカ** (owner's pick, 2026-10-26). From 灯火 (a lamp's flame); it also holds the "tou" of 灯台 and 東大. Other people in story 1 still go by role
+- Undecided: the hero's look
 
 ## Name
 
