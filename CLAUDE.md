@@ -95,19 +95,19 @@ Claude's calls, delegated by the owner on 2026-10-26 ("no preference").
 - The Phaser repository ships agent skills in `skills/`; read them before writing Phaser code
 - **Next.js** around it, from the official `phaserjs/template-nextjs` (its package.json pins phaser 4.0.0, next 15.3.1, react 19.0.0; bump them). Next.js is what the owner's other repositories use, and the letters and other text screens are drawn as React over the canvas in a normal readable font
 - pnpm, Vercel. If server functions are ever added, put them in sin1 (global rule)
-- Still open: how lines are read aloud (recorded voice or the browser's speech), how the usage record is kept, how progress is saved
+- Still open: how lines are read aloud (recorded voice or the browser's speech), how the usage record is kept
   - The usage record waits until before the first release (owner, 2026-10-26: not needed now). Steps 1–7 are clear boundaries, so it can be added at scene start and end later. It must be in before release, or the first players leave no record. Claude's leaning, not decided: own records per scene in Neon (Singapore), anonymous per device, no names or device details
 
 ## Code
 
 - `pnpm dev`, `pnpm lint`, `pnpm typecheck`, `pnpm test`, `pnpm build`. lefthook runs eslint, prettier and the typecheck on commit and the tests on push
-- `src/game/` is the Phaser side: `main.ts` (config), `scenes/` (Boot, Workshop, Town, Orchard and Beach in `Gathering.ts`, Gate, Packing, Plates, Fill, Lesson, Storeroom, Farewell, Hud), `state.ts` (pure rules for bag, crate, basket, deliveries, the ferry and notebook pages), `store.ts` (the one shared state), `bus.ts` (Phaser asks React to show a letter, a line or the notebook)
+- `src/game/` is the Phaser side: `main.ts` (config), `scenes/` (Boot, Workshop, Town, Orchard and Beach in `Gathering.ts`, Gate, Packing, Plates, Fill, Lesson, Storeroom, Farewell, Hud), `state.ts` (pure rules for bag, crate, basket, deliveries, the ferry and notebook pages), `store.ts` (the one shared state, saved on every change), `bus.ts` (Phaser asks React to show a letter, a line or the notebook)
 - `src/components/` is the React side: `Game.tsx` loads Phaser in the browser, `TextLayer.tsx` shows letters and lines in a normal font, read aloud on tap (`src/lib/speak.ts`, the browser's speech for now), `Notebook.tsx` is the tools' notebook, `Reply.tsx` the word-tile letter of step 6, `Reread.tsx` the rereading of step 7. React draws the same pixel art through `src/game/art/images.ts` (Boot turns the textures into image URLs) and `Sprite.tsx`
 - In development, `window.__game` and `window.__store` let check scripts read the scenes and the state
 - `src/story/story1.ts` holds all story 1 text
 - Art is placeholder pixel art drawn in code (`src/game/art/sprites.ts`) until real art is made; real art needs the owner's sign-off on two or three samples first
 - The phaserjs template's `log.js` was not taken: it pings an outside server on every dev and build run
-- Progress is not saved yet; a reload starts over
+- Progress is saved in the browser's localStorage on every state change (`src/game/save.ts`; Claude's call, 2026-10-26: no server, nothing that names the player or the device). A reload starts in the workshop; steps 4 and 7 resume from the state there. A save that does not match the current shape is dropped and the game starts over; bump `VERSION` in `save.ts` when the state changes shape. A wrong reply in step 6 is saved before the merchant recounts, so reloading cannot bring back the same heap
 
 ## Design rules
 

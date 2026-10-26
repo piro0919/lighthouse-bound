@@ -145,6 +145,8 @@ export class Storeroom extends Phaser.Scene {
     const before = getState();
     const { state, result, truth } = settleTally(before, said, Math.random);
     const newPage = state.pages.includes('tens') && !before.pages.includes('tens');
+    // 外れは数え直しを見せる前に確かめておく。見たあとに読み込み直しても、同じ山には戻らない
+    if (result === 'miss') setState(state);
 
     const span = STAGE + OUTER_MARGIN * 2;
     // 蔵の中を片づけて、商人が詰め直した箱とばらだけを見せる。下の山や箱は触れなくする
@@ -184,7 +186,6 @@ export class Storeroom extends Phaser.Scene {
       return;
     }
     sayAll([lines.tallyMiss, lines.tallyTomorrow], () => {
-      setState(state);
       const camera = this.cameras.main;
       camera.once(Phaser.Cameras.Scene2D.Events.FADE_OUT_COMPLETE, () =>
         this.scene.start('Workshop'),
