@@ -96,6 +96,7 @@ Claude's calls, delegated by the owner on 2026-10-26 ("no preference").
 - **Next.js** around it, from the official `phaserjs/template-nextjs` (its package.json pins phaser 4.0.0, next 15.3.1, react 19.0.0; bump them). Next.js is what the owner's other repositories use, and the letters and other text screens are drawn as React over the canvas in a normal readable font
 - pnpm, Vercel. If server functions are ever added, put them in sin1 (global rule)
 - Still open: how lines are read aloud (recorded voice or the browser's speech), how the usage record is kept, how progress is saved
+  - The usage record waits until before the first release (owner, 2026-10-26: not needed now). Steps 1–7 are clear boundaries, so it can be added at scene start and end later. It must be in before release, or the first players leave no record. Claude's leaning, not decided: own records per scene in Neon (Singapore), anonymous per device, no names or device details
 
 ## First release
 
